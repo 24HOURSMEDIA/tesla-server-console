@@ -1,0 +1,7 @@
+{
+    "dir": "/var/log/nginx",
+    "name": "*.gz",
+    "deleteAfterTransfer": false,
+    "s3Bucket": "com.example.logs",
+    "s3Dir": "/logs/"
+}

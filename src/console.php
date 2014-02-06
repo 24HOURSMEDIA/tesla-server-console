@@ -6,17 +6,15 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
-$console = new Application('My Silex Application', 'n/a');
+$console = new Application('Tesla AWS Console', '1.0-dev');
 $console->getDefinition()->addOption(new InputOption('--env', '-e', InputOption::VALUE_REQUIRED, 'The Environment name.', 'dev'));
-$console
-    ->register('my-command')
-    ->setDefinition(array(
-        // new InputOption('some-option', null, InputOption::VALUE_NONE, 'Some help'),
-    ))
-    ->setDescription('My command description')
-    ->setCode(function (InputInterface $input, OutputInterface $output) use ($app) {
-        // do something
-    })
-;
+ini_set('display_errors',1);
+
+
+
+$command = $app['tesla_aws_console_logmanager_logmove.command'];
+!$command ?: $command->registerWithConsole($console);
+
+
 
 return $console;

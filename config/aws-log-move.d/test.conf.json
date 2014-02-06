@@ -1,0 +1,7 @@
+{
+    "dir": "testdata/logs",
+    "name": "*.log",
+    "deleteAfterTransfer": true,
+    "s3Bucket": "com.24hoursmedia.logs",
+    "s3Dir": "/test/logtest/"
+}
