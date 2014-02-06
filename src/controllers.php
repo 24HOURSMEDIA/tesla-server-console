@@ -20,9 +20,17 @@ $app->get(
             )
         );
     }
-)
-    ->bind('homepage');
+)->bind('homepage');
 
+$app->get(
+    '/live-dashboard',
+    function () use ($app) {
+        return $app['twig']->render(
+            'live-dashboard.html.twig',
+            array()
+        );
+    }
+)->bind('live-dashboard');
 
 $app->get(
     '/info/phpinfo',

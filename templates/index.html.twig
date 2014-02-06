@@ -5,23 +5,28 @@
 
 
 
-<div class="alert alert-info">
-    <p><small>
-        Server Operating system: <strong>{{ uname }}</strong>
-        Delivered by <strong>{{ _server.SERVER_SOFTWARE }}</strong>
-        for server with address <strong>{{ _server.SERVER_ADDR }}:{{ _server.SERVER_PORT }}</strong> and host <strong>{{ _server.HTTP_HOST }}</strong>
+    <div class="alert alert-info">
+        <p>
+            <small>
+                Server Operating system: <strong>{{ uname }}</strong>
+                Delivered by <strong>{{ _server.SERVER_SOFTWARE }}</strong>
+                for server with address <strong>{{ _server.SERVER_ADDR }}:{{ _server.SERVER_PORT }}</strong> and host
+                <strong>{{ _server.HTTP_HOST }}</strong>
 
-        with server API: <strong>{{ sapi_name }}</strong>
-        </small></p>
-</div>
+                with server API: <strong>{{ sapi_name }}</strong>
+            </small>
+        </p>
+    </div>
 
     <div class="jumbotron">
         <h1>Welcome to {{ app.config.parameter('console.server_name')|upper }}</h1>
     </div>
 
     <ul>
-        <li><a href="{{ path('info_phpinfo') }}">phpinfo</li></li>
+        <li><a href="{{ path('info_phpinfo') }}">phpinfo</a></li>
 
     </ul>
+
+
 
 {% endblock %}

@@ -12,27 +12,36 @@ $app->register(new UrlGeneratorServiceProvider());
 $app->register(new ValidatorServiceProvider());
 $app->register(new ServiceControllerServiceProvider());
 $app->register(new \Silex\Provider\SerializerServiceProvider());
-$app->register(new TwigServiceProvider(), array(
-    'twig.path'    => array(__DIR__.'/../templates'),
-    'twig.options' => array('cache' => __DIR__.'/../cache/twig'),
-));
-$app['twig'] = $app->share($app->extend('twig', function($twig, $app) {
-    // add custom globals, filters, tags, ...
+$app->register(
+    new TwigServiceProvider(),
+    array(
+        'twig.path' => array(__DIR__ . '/../templates'),
+        'twig.options' => array('cache' => __DIR__ . '/../cache/twig'),
+    )
+);
+$app['twig'] = $app->share(
+    $app->extend(
+        'twig',
+        function ($twig, $app) {
+            // add custom globals, filters, tags, ...
 
-    return $twig;
-}));
+            return $twig;
+        }
+    )
+);
 
 // register amazon web services
-$app['aws'] = $app->share(function() use ($app) {
-    $awsCfg = $app['config']->getSection('aws-default');
-    $aws = Aws::factory($awsCfg);
-    return $aws;
-});
+$app['aws'] = $app->share(
+    function () use ($app) {
+        $awsCfg = $app['config']->getSection('aws-default');
+        $aws = Aws::factory($awsCfg);
 
-
-
+        return $aws;
+    }
+);
 
 
 $app->register(new \Tesla\AwsConsole\LogManager\Provider\SilexLogManagerServiceProvider());
+$app->register(new \Tesla\SystemInfo\Provider\SilexSystemInfoServiceProvider());
 
 return $app;
