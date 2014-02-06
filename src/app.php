@@ -24,7 +24,7 @@ $app['twig'] = $app->share($app->extend('twig', function($twig, $app) {
 
 // register amazon web services
 $app['aws'] = $app->share(function() use ($app) {
-    $awsCfg = (array)$app['config']->getSection('aws-default');
+    $awsCfg = $app['config']->getSection('aws-default');
     $aws = Aws::factory($awsCfg);
     return $aws;
 });

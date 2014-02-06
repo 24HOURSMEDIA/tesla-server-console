@@ -79,7 +79,7 @@ class ConfigurationManager
         if (false !== strpos($encoded, '%')) {
             throw new ConfigurationException('Unresolved parameters found in configuration.');
         }
-        $this->config = json_decode($encoded);
+        $this->config = json_decode($encoded, true);
         $t = microtime(true) - $t;
         // echo($t);
         $this->isLoaded = true;
@@ -100,21 +100,21 @@ class ConfigurationManager
     function getSection($section)
     {
         $this->isLoaded or $this->load();
-        if (!isset($this->config->{$section})) {
+        if (!isset($this->config[$section])) {
             throw new ConfigurationException('Section ' . $section . ' not defined in configuration');
         }
 
-        return $this->config->{$section};
+        return $this->config[$section];
     }
 
     function getSetting($section, $key)
     {
         $this->isLoaded or $this->load();
         $section = $this->getSection($section);
-        if (!isset($section->{$key})) {
+        if (!isset($section[$key])) {
             throw new ConfigurationException('Key ' . $key . ' not found in section ' . $section);
         }
-        return $section->{$key};
+        return $section[$key];
     }
 
 
