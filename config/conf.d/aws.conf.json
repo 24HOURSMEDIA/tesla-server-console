@@ -1,0 +1,7 @@
+{
+    "aws-default": {
+        "key": "%aws.key%",
+        "secret": "%aws.secret%",
+        "region": "%aws.region%"
+    }
+}
