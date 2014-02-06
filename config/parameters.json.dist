@@ -2,5 +2,6 @@
 
     "aws.key": "",
     "aws.secret": "",
-    "aws.region": ""
+    "aws.region": "",
+    "console.server_name": "epg-edge"
 }

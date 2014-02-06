@@ -73,7 +73,9 @@ class ConfigurationManager
             if (!is_array($v) && !is_object($v)) {
                 $encoded = str_replace('%' . $k . '%', $v, $encoded);
             } else {
-                throw new ConfigurationException('ConfigurationManager does not support object or arrays - key ' . $k);
+                if ((false !== strpos($encoded, '%' . $k . '%'))) {
+                    throw new ConfigurationException('ConfigurationManager does not support object or arrays for substitution - key ' . $k);
+                }
             }
         }
         if (false !== strpos($encoded, '%')) {
@@ -114,6 +116,7 @@ class ConfigurationManager
         if (!isset($section[$key])) {
             throw new ConfigurationException('Key ' . $key . ' not found in section ' . $section);
         }
+
         return $section[$key];
     }
 
