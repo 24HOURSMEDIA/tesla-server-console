@@ -1,2 +1,6 @@
-[
-]
+{
+
+    "aws.key": "",
+    "aws.secret": "",
+    "aws.region": ""
+}

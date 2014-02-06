@@ -1,23 +1,46 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>{% block title '' %} - My Silex Application</title>
+<head>
+    <title>{% block title '' %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap -->
+    <link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
+    <style>
+        body {
+            padding-top: 60px; /* 60px to make the container go all the way to the bottom of the topbar */
+        }
+    </style>
+    <link href="bootstrap/css/bootstrap-responsive.min.css" rel="stylesheet" media="screen">
+</head>
+<body>
 
-        <link href="{{ app.request.basepath }}/css/main.css" rel="stylesheet" type="text/css" />
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar-inner">
+        <div class="container">
+            <button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="brand" href="#">{{ app.config.parameter('console.server_name') }}</a>
+            <div class="nav-collapse collapse">
+                <ul class="nav">
+                    <!--
+                    <li class="active"><a href="#">Server Console</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    -->
+                </ul>
+            </div><!--/.nav-collapse -->
+        </div>
+    </div>
+</div>
 
-        <script type="text/javascript">
-            var _gaq = _gaq || [];
-            _gaq.push(['_setAccount', 'UA-XXXXXXXX-X']);
-            _gaq.push(['_trackPageview']);
+<div class="container">
+{% block content %}{% endblock %}
+</div>
 
-            (function() {
-                var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-                ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-                var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-            })();
-        </script>
-    </head>
-    <body>
-        {% block content %}{% endblock %}
-    </body>
+<script src="//code.jquery.com/jquery.js"></script>
+<script src="bootstrap/js/bootstrap.min.js"></script>
+</body>
 </html>
