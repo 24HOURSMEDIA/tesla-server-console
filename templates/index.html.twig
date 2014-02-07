@@ -5,10 +5,18 @@
 
 
 
+
+
+    <div class="jumbotron">
+        <h1>Welcome to {{ app.config.parameter('console.server_name')|upper }}</h1>
+    </div>
+
+
+
     <div class="alert alert-info">
         <p>
             <small>
-                Server Operating system: <strong>{{ uname }}</strong>
+
                 Delivered by <strong>{{ _server.SERVER_SOFTWARE }}</strong>
                 for server with address <strong>{{ _server.SERVER_ADDR }}:{{ _server.SERVER_PORT }}</strong> and host
                 <strong>{{ _server.HTTP_HOST }}</strong>
@@ -18,16 +26,17 @@
         </p>
     </div>
 
-    <div class="jumbotron">
-        <h1>Welcome to {{ app.config.parameter('console.server_name')|upper }}</h1>
+    <div class="alert alert-info">
+        <p>
+            <small>
+                <strong>{{ uname }}</strong>
+
+            </small>
+        </p>
     </div>
 
     <ul>
         <li><a href="{{ path('php_phpinfo') }}">phpinfo</a></li>
-        <li><a href="{{ path('php_apc_stat') }}">apc stat</a></li>
-        <li><a href="{{ path('memcache_memcache_stat') }}">memcache stat</a></li>
     </ul>
-
-
 
 {% endblock %}
