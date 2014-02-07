@@ -65,12 +65,14 @@ class SilexSystemInfoServiceProvider implements ServiceProviderInterface
         $routePrefix = '/tesla/system-info';
         $serializer = $app['serializer'];
 
+        $defaultCachetime = 20;
+
         $app->get(
             $routePrefix . '/loadavg/{interval}',
-            function ($interval) use ($app, $serializer) {
+            function ($interval) use ($app, $serializer, $defaultCachetime) {
                 $result = $app['tesla_systeminfo_loadavg' . '.monitor']->getResult($interval);
                 $json = $serializer->serialize($result, 'json');
-                $response = Response::create($json);
+                $response = Response::create($json)->setPrivate()->setMaxAge($defaultCachetime);
                 $response->headers->set('content-type', 'application/json');
 
                 return $response;
@@ -78,10 +80,10 @@ class SilexSystemInfoServiceProvider implements ServiceProviderInterface
         )->bind('tesla_system_info_loadavg');
         $app->get(
             $routePrefix . '/cpuusage/{type}',
-            function ($type) use ($app, $serializer) {
+            function ($type) use ($app, $serializer, $defaultCachetime) {
                 $result = $app['tesla_systeminfo_cpuusage' . '.monitor']->getResult($type);
                 $json = $serializer->serialize($result, 'json');
-                $response = Response::create($json);
+                $response = Response::create($json)->setPrivate()->setMaxAge($defaultCachetime);
                 $response->headers->set('content-type', 'application/json');
 
                 return $response;
@@ -89,10 +91,10 @@ class SilexSystemInfoServiceProvider implements ServiceProviderInterface
         )->bind('tesla_system_info_cpuusage');
         $app->get(
             $routePrefix . '/netportconnections/{port}/{state}',
-            function ($port, $state) use ($app, $serializer) {
+            function ($port, $state) use ($app, $serializer, $defaultCachetime) {
                 $result = $app['tesla_systeminfo_netportconnections' . '.monitor']->getResult($port, $state);
                 $json = $serializer->serialize($result, 'json');
-                $response = Response::create($json);
+                $response = Response::create($json)->setPrivate()->setMaxAge($defaultCachetime);
                 $response->headers->set('content-type', 'application/json');
 
                 return $response;
@@ -104,10 +106,10 @@ class SilexSystemInfoServiceProvider implements ServiceProviderInterface
         foreach ($services as $serviceId) {
             $app->get(
                 $routePrefix . '/' . $serviceId,
-                function () use ($app, $serializer, $serviceId) {
+                function () use ($app, $serializer, $serviceId, $defaultCachetime) {
                     $result = $app['tesla_systeminfo_' . $serviceId . '.monitor']->getResult();
                     $json = $serializer->serialize($result, 'json');
-                    $response = Response::create($json);
+                    $response = Response::create($json)->setPrivate()->setMaxAge($defaultCachetime);
                     $response->headers->set('content-type', 'application/json');
 
                     return $response;
