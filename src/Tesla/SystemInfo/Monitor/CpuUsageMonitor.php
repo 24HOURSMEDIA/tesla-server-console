@@ -8,33 +8,42 @@
 
 namespace Tesla\SystemInfo\Monitor;
 
+use Tesla\SystemInfo\Exception\MonitorException;
 
 class CpuUsageMonitor implements MonitorInterface
 {
 
     private function getStats()
     {
-        $stat1 = file('/proc/stat');
-        //sleep(1);
-        //$stat2 = file('/proc/stat');
-        $info1 = explode(" ", preg_replace("!cpu +!", "", $stat1[0]));
-        //$info2 = explode(" ", preg_replace("!cpu +!", "", $stat2[0]));
-        $dif = array();
-        $dif['user'] = /*$info2[0] -*/
-            $info1[0];
-        $dif['nice'] = /*$info2[1]-*/
-            $info1[1];
-        $dif['sys'] = /*$info2[2]-*/
-            $info1[2];
-        $dif['idle'] = /*$info2[3]-*/
-            $info1[3];
-        $total = array_sum($dif);
-        $cpu = array();
-        foreach ($dif as $x => $y) {
-            $cpu[$x] = round($y / $total * 100, 1);
+
+        $output = array();
+        exec('top -b -n 2 |grep ^Cpu', $output);
+        $lines = explode(' ', $output[1]);
+        $stats = array('user' => -1, 'sys' => -1, 'nice' => -1, 'idle' => -1, 'wait' => -1);
+        foreach ($lines as $line) {
+            if (strpos($line, 'us')) {
+                $stats['user'] = (float)$line;
+            }
+            if (strpos($line, 'sy')) {
+                $stats['sys'] = (float)$line;
+            }
+            if (strpos($line, 'ni')) {
+                $stats['nice'] = (float)$line;
+            }
+            if (strpos($line, 'id')) {
+                $stats['idle'] = (float)$line;
+            }
+            if (strpos($line, 'wa')) {
+                $stats['wait'] = (float)$line;
+            }
+            if (strpos($line, 'st')) {
+                $stats['steal'] = (float)$line;
+            }
         }
 
-        return $cpu;
+        return $stats;
+
+
     }
 
     /**
@@ -53,6 +62,10 @@ class CpuUsageMonitor implements MonitorInterface
                 return $stats['sys'];
             case 'idle':
                 return $stats['idle'];
+            case 'wait':
+                return $stats['wait'];
+            case 'steal':
+                return $stats['steal'];
             default:
                 throw new MonitorException('CpuUsageMonitor: invalid type ' . $type . ' - must be user,nice,sys or idle');
         }

@@ -24,6 +24,12 @@
             cpuuser_idle: {
                 route: '{{ path('tesla_system_info_cpuusage', {type: "idle"}) }}'
             },
+            cpuuser_wait: {
+                route: '{{ path('tesla_system_info_cpuusage', {type: "wait"}) }}'
+            },
+            cpuuser_steal: {
+                route: '{{ path('tesla_system_info_cpuusage', {type: "steal"}) }}'
+            },
             netport_est_all: {
                 route: '{{ path('tesla_system_info_netportconnections', {port: 'all', state: 'established'}) }}'
             },
