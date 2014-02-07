@@ -45,5 +45,5 @@ $app['aws'] = $app->share(
 
 $app->register(new \Tesla\AwsConsole\LogManager\Provider\SilexLogManagerServiceProvider());
 $app->register(new \Tesla\SystemInfo\Provider\SilexSystemInfoServiceProvider());
-
+$app->register(new \Tesla\WebserverConsole\Provider\SilexWebserverConsoleServiceProvider());
 return $app;
