@@ -16,6 +16,7 @@ use Tesla\SystemInfo\Monitor\CpuCoresMonitor;
 use Tesla\SystemInfo\Monitor\CpuUsageMonitor;
 use Tesla\SystemInfo\Monitor\LoadAvgMonitor;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Tesla\SystemInfo\Monitor\NetPortConnectionsMonitor;
 
 class SilexSystemInfoServiceProvider implements ServiceProviderInterface
 {
@@ -42,6 +43,11 @@ class SilexSystemInfoServiceProvider implements ServiceProviderInterface
         $app['tesla_systeminfo_cpuusage.monitor'] = $app->share(
             function () use ($app) {
                 return new CpuUsageMonitor();
+            }
+        );
+        $app['tesla_systeminfo_netportconnections.monitor'] = $app->share(
+            function () use ($app) {
+                return new NetPortConnectionsMonitor();
             }
         );
 
@@ -81,6 +87,17 @@ class SilexSystemInfoServiceProvider implements ServiceProviderInterface
                 return $response;
             }
         )->bind('tesla_system_info_cpuusage');
+        $app->get(
+            $routePrefix . '/netportconnections/{port}/{state}',
+            function ($port, $state) use ($app, $serializer) {
+                $result = $app['tesla_systeminfo_netportconnections' . '.monitor']->getResult($port, $state);
+                $json = $serializer->serialize($result, 'json');
+                $response = Response::create($json);
+                $response->headers->set('content-type', 'application/json');
+
+                return $response;
+            }
+        )->bind('tesla_system_info_netportconnections');
 
         $services = array('cpucores');
 

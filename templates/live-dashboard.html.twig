@@ -23,13 +23,38 @@
             },
             cpuuser_idle: {
                 route: '{{ path('tesla_system_info_cpuusage', {type: "idle"}) }}'
+            },
+            netport_est_all: {
+                route: '{{ path('tesla_system_info_netportconnections', {port: 'all', state: 'established'}) }}'
+            },
+            netport_all_all: {
+                route: '{{ path('tesla_system_info_netportconnections', {port: 'all', state: 'all'}) }}'
+            },
+            netport_est_80: {
+                route: '{{ path('tesla_system_info_netportconnections', {port: '80', state: 'established'}) }}'
+            },
+            netport_all_80: {
+                route: '{{ path('tesla_system_info_netportconnections', {port: '80', state: 'all'}) }}'
+            },
+            netport_est_2000: {
+                route: '{{ path('tesla_system_info_netportconnections', {port: '2000', state: 'established'}) }}'
+            },
+            netport_all_2000: {
+                route: '{{ path('tesla_system_info_netportconnections', {port: '2000', state: 'all'}) }}'
+            },
+            netport_est_9000: {
+                route: '{{ path('tesla_system_info_netportconnections', {port: '9000', state: 'established'}) }}'
+            },
+            netport_all_9000: {
+                route: '{{ path('tesla_system_info_netportconnections', {port: '9000', state: 'all'}) }}'
             }
         };
+
         $(document).ready(function () {
             loadStats();
             window.setInterval(function () {
                 loadStats();
-            }, 2000);
+            }, 10000);
         });
 
         function loadStats() {
