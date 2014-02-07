@@ -12,6 +12,8 @@ $app->register(new UrlGeneratorServiceProvider());
 $app->register(new ValidatorServiceProvider());
 $app->register(new ServiceControllerServiceProvider());
 $app->register(new \Silex\Provider\SerializerServiceProvider());
+
+
 $app->register(
     new TwigServiceProvider(),
     array(
