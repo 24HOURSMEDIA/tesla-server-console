@@ -47,6 +47,12 @@
             },
             netport_all_9000: {
                 route: '{{ path('tesla_system_info_netportconnections', {port: '9000', state: 'all'}) }}'
+            },
+            netport_est_8090: {
+                route: '{{ path('tesla_system_info_netportconnections', {port: '8090', state: 'established'}) }}'
+            },
+            netport_all_8090: {
+                route: '{{ path('tesla_system_info_netportconnections', {port: '8090', state: 'all'}) }}'
             }
         };
 
