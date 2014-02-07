@@ -83,12 +83,23 @@ class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
             '/tesla-server-console/php/apc-stat',
             function () use ($app) {
                 ob_start();
-                require(__DIR__ . '/../Apc/apc_stat.inc.php');
+                require(__DIR__ . '/../Ext/apc_stat.inc.php');
                 $html = ob_get_clean();
 
                 return $app['twig']->render('content.html.twig', array('html' => $html));
             }
-        )->bind('php_apc_stat');;
+        )->bind('php_apc_stat');
+
+        $app->get(
+            '/tesla-server-console/memcache/memcache-stat',
+            function () use ($app) {
+                ob_start();
+                require(__DIR__ . '/../Ext/memcache_stat.inc.php');
+                $html = ob_get_clean();
+
+                return $app['twig']->render('content.html.twig', array('html' => $html));
+            }
+        )->bind('memcache_memcache_stat');;
 
 
     }
