@@ -30,9 +30,9 @@
         <br/><br/>
         <strong>{{ selected_file.file }}:</strong>
         <pre style="display:block;margin-top:20px; padding:10px; font-size: 90%; font-family: courier, courier new, typewriter, monospace">
-{% for line in lines %}
-    {{ line }}<br/>
-{% endfor %}
+{% for line in lines %}{{ line }}<br/>{% endfor %}
+
+
 
         </pre>
     {% endif %}
