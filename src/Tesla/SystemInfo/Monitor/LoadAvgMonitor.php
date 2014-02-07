@@ -42,8 +42,6 @@ class LoadAvgMonitor implements MonitorInterface
     function getResult($interval = 1)
     {
         $value = $this->getValue($interval);
-        $result = new MonitorResult();
-        $result->setValue($value);
         $title = 'load avg. ' . $interval . ' min';
 
         return MonitorResult::create($title, (float)sprintf('%0.2f', $value))->setMin(0)->setMax($this->maxLevel);

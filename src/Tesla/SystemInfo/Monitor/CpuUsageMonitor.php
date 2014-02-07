@@ -60,10 +60,7 @@ class CpuUsageMonitor implements MonitorInterface
      */
     function getResult($type = "user")
     {
-
         $value = $this->getValue($type);
-        $result = new MonitorResult();
-        $result->setValue($value);
         $title = 'cpu ' . $type . ' (%)';
         $inverse = $type == 'idle';
 

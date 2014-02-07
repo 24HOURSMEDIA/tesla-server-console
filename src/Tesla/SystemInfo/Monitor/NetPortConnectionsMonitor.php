@@ -11,6 +11,12 @@ namespace Tesla\SystemInfo\Monitor;
 
 use Tesla\SystemInfo\Exception\MonitorException;
 
+/**
+ * Class NetPortConnectionsMonitor
+ * Monitor listening, established, all connections on a port or all ports
+ *
+ * @package Tesla\SystemInfo\Monitor
+ */
 class NetPortConnectionsMonitor implements MonitorInterface
 {
     /**
@@ -23,7 +29,7 @@ class NetPortConnectionsMonitor implements MonitorInterface
         $port = $port == 'all' ? $port : (int)$port;
         $port = (int)$port;
         if (!in_array($state, array('ALL', 'LISTEN', 'ESTABLISHED'))) {
-            throw new MonitorException('state must be one of all, connected, established, waiting');
+            throw new MonitorException('state must be one of all, listen, established');
         }
         // make a command
         $cmd = 'netstat -an | grep ' . escapeshellarg($port == 'all' ? ':' : ':' . $port) . ' ';
@@ -34,7 +40,6 @@ class NetPortConnectionsMonitor implements MonitorInterface
         $cmd .= ' | wc -l';
         $output = array();
         exec($cmd, $output);
-
         return count($output) ? (int)$output[0] : 0;
 
     }
