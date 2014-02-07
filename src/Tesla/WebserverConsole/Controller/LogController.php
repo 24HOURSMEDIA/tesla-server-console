@@ -40,7 +40,9 @@ class LogController
                  ) as $file) {
             /* @var $file \SplFileInfo */
             $key = sha1('weSvdwSw32432432423' . $file->getRealPath());
-            $files[$key] = array('id' => $key, 'file' => $file->getRealPath(), 'title' => $file->getRealPath());
+            if ($file->getSize() > 0) {
+                $files[$key] = array('id' => $key, 'file' => $file->getRealPath(), 'title' => $file->getFilename());
+            }
         }
 
         $selectedFile = null;
