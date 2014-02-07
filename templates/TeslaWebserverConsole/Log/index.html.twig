@@ -13,7 +13,6 @@
                     <option value="{{ file.id }}"
                             {% if selected_file and selected_file.id == file.id %}selected="selected"{% endif %}>{{ file.title }}</option>
                 {% endfor %}
-
             </select>
         </div>
         <div class="form-group">
@@ -24,13 +23,19 @@
                 <option value="1000" {% if count == 1000 %}selected="selected"{% endif %}>last 1000</option>
             </select>
         </div>
+        <div class="form-group">
+            <select name="sort" onchange="this.form.submit();" class="form-control">
+                <option value="desc" {% if sort=='desc' %}selected="selected"{% endif %}>descending</option>
+                <option value="asc" {% if sort=='asc' %}selected="selected"{% endif %}>ascending</option>
+            </select>
+        </div>
     </form>
 
     {% if selected_file %}
         <br/><br/>
         <strong>{{ selected_file.file }}:</strong>
         <pre style="display:block;margin-top:20px; padding:10px; font-size: 90%; font-family: courier, courier new, typewriter, monospace">
-{% for line in lines %}{{ line }}<br/>{% endfor %}
+{% for line in lines %}<p>{{ line }}</p>{% endfor %}
 
 
 

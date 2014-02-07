@@ -30,8 +30,8 @@ class LogController
         if ($count > 1000) {
             $count = 1000;
         }
-
         $fileId = $request->get('file');
+        $sort = $request->get('sort', 'desc');
 
         // get available log files and make a hash key map
         $files = array();
@@ -52,12 +52,20 @@ class LogController
             $cmd = 'tail ' . escapeshellarg($selectedFile['file']) . ' -n ' . (int)$count;
             $lines = array();
             exec($cmd, $lines);
-            //$lines = array_reverse($output);
+            if ($sort == 'desc') {
+                $lines = array_reverse($lines);
+            }
         }
 
         return $this->twig->render(
             'TeslaWebserverConsole/Log/index.html.twig',
-            array('files' => $files, 'selected_file' => $selectedFile, 'count' => $count, 'lines' => $lines)
+            array(
+                'files' => $files,
+                'selected_file' => $selectedFile,
+                'count' => $count,
+                'lines' => $lines,
+                'sort' => $sort
+            )
         );
     }
 } 
