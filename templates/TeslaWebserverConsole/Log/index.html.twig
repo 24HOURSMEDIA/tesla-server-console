@@ -28,13 +28,13 @@
 
     {% if selected_file %}
         <br/><br/>
-        {{ selected_file.file }}:
-        <code style="display:block;margin-top:20px;">
-            {% for line in lines %}
-                {{ line }}<br/>
-            {% endfor %}
+        <strong>{{ selected_file.file }}:</strong>
+        <pre style="display:block;margin-top:20px; padding:10px; font-size: 90%; font-family: courier, courier new, typewriter, monospace">
+{% for line in lines %}
+    {{ line }}<br/>
+{% endfor %}
 
-        </code>
+        </pre>
     {% endif %}
 
 {% endblock %}
