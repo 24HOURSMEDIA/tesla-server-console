@@ -11,6 +11,8 @@ namespace Tesla\WebserverConsole\Provider;
 
 use Silex\Application;
 use Silex\ServiceProviderInterface;
+use Tesla\WebserverConsole\Controller\LogController;
+use Symfony\Component\HttpFoundation\Request;
 
 class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
 {
@@ -24,7 +26,11 @@ class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
      */
     public function register(Application $app)
     {
-
+        $app['tesla_webserverconsole_log.controller'] = $app->share(
+            function () use ($app) {
+                return new LogController($app['twig']);
+            }
+        );
     }
 
     /**
@@ -99,7 +105,14 @@ class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
 
                 return $app['twig']->render('content.html.twig', array('html' => $html));
             }
-        )->bind('memcache_memcache_stat');;
+        )->bind('memcache_memcache_stat');
+
+        $app->get(
+            '/tesla-server-console/log',
+            function (Request $request) use ($app) {
+                return $app['tesla_webserverconsole_log.controller']->indexAction($request);
+            }
+        )->bind('tesla_webserverconsole_log');;
 
 
     }

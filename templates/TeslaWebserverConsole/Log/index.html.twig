@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+    <h1>Server Logs</h1>
+
+
+    <form method="get" action="{{ path('tesla_webserverconsole_log') }}" class="form-inline">
+        <div class="form-group">
+            <select name="file" onchange="this.form.submit();" class="form-control" placeholder="choose a log file">
+                <option value="">choose a log file&hellip;</option>
+                {% for file in files %}
+                    <option value="{{ file.id }}"
+                            {% if selected_file and selected_file.id == file.id %}selected="selected"{% endif %}>{{ file.title }}</option>
+                {% endfor %}
+
+            </select>
+        </div>
+        <div class="form-group">
+            <select name="count" onchange="this.form.submit();" class="form-control">
+                <option value="25" {% if count == 25 %}selected="selected"{% endif %}>last 25</option>
+                <option value="100" {% if count == 100 %}selected="selected"{% endif %}>last 100</option>
+                <option value="250" {% if count == 250 %}selected="selected"{% endif %}>last 250</option>
+                <option value="1000" {% if count == 1000 %}selected="selected"{% endif %}>last 1000</option>
+            </select>
+        </div>
+    </form>
+
+    {% if selected_file %}
+        <br/><br/>
+        {{ selected_file.file }}:
+        <code style="display:block;margin-top:20px;">
+            {% for line in lines %}
+                {{ line }}<br/>
+            {% endfor %}
+
+        </code>
+    {% endif %}
+
+{% endblock %}
