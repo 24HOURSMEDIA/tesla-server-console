@@ -6,10 +6,10 @@
  * Time: 21:42
  */
 
-namespace Tesla\SystemInfo\Monitor;
+namespace Tesla\SystemInfo\Poll;
 
 
-class MonitorResult
+class PollResult
 {
 
     private $value;

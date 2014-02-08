@@ -4,94 +4,94 @@
     <script>
         var stats = {
             loadavg1: {
-                route: '{{ path('tesla_system_info_loadavg', {interval: 1}) }}'
+                route: '{{ path('tesla_systeminfo_poll_loadavg', {interval: 1}) }}'
             },
             loadavg2: {
-                route: '{{ path('tesla_system_info_loadavg', {interval: 5}) }}'
+                route: '{{ path('tesla_systeminfo_poll_loadavg', {interval: 5}) }}'
             },
             loadavg3: {
-                route: '{{ path('tesla_system_info_loadavg', {interval: 15}) }}'
+                route: '{{ path('tesla_systeminfo_poll_loadavg', {interval: 15}) }}'
             },
             cpuuser_user: {
-                route: '{{ path('tesla_system_info_cpuusage', {type: "user"}) }}'
+                route: '{{ path('tesla_systeminfo_poll_cpuusage', {type: "user"}) }}'
             },
             cpuuser_nice: {
-                route: '{{ path('tesla_system_info_cpuusage', {type: "nice"}) }}'
+                route: '{{ path('tesla_systeminfo_poll_cpuusage', {type: "nice"}) }}'
             },
             cpuuser_sys: {
-                route: '{{ path('tesla_system_info_cpuusage', {type: "sys"}) }}'
+                route: '{{ path('tesla_systeminfo_poll_cpuusage', {type: "sys"}) }}'
             },
             cpuuser_idle: {
-                route: '{{ path('tesla_system_info_cpuusage', {type: "idle"}) }}'
+                route: '{{ path('tesla_systeminfo_poll_cpuusage', {type: "idle"}) }}'
             },
             cpuuser_wait: {
-                route: '{{ path('tesla_system_info_cpuusage', {type: "wait"}) }}'
+                route: '{{ path('tesla_systeminfo_poll_cpuusage', {type: "wait"}) }}'
             },
             cpuuser_steal: {
-                route: '{{ path('tesla_system_info_cpuusage', {type: "steal"}) }}'
+                route: '{{ path('tesla_systeminfo_poll_cpuusage', {type: "steal"}) }}'
             },
             netport_est_all: {
-                route: '{{ path('tesla_system_info_netportconnections', {port: 'all', state: 'established'}) }}'
+                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: 'all', state: 'established'}) }}'
             },
             netport_wait_all: {
-                route: '{{ path('tesla_system_info_netportconnections', {port: 'all', state: 'wait'}) }}'
+                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: 'all', state: 'wait'}) }}'
             },
             netport_all_all: {
-                route: '{{ path('tesla_system_info_netportconnections', {port: 'all', state: 'all'}) }}'
+                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: 'all', state: 'all'}) }}'
             },
             netport_est_80: {
-                route: '{{ path('tesla_system_info_netportconnections', {port: '80', state: 'established'}) }}'
+                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '80', state: 'established'}) }}'
             },
             netport_wait_80: {
-                route: '{{ path('tesla_system_info_netportconnections', {port: '80', state: 'wait'}) }}'
+                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '80', state: 'wait'}) }}'
             },
             netport_all_80: {
-                route: '{{ path('tesla_system_info_netportconnections', {port: '80', state: 'all'}) }}'
+                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '80', state: 'all'}) }}'
             },
             netport_est_2000: {
-                route: '{{ path('tesla_system_info_netportconnections', {port: '2000', state: 'established'}) }}'
+                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '2000', state: 'established'}) }}'
             },
             netport_wait_2000: {
-                route: '{{ path('tesla_system_info_netportconnections', {port: '2000', state: 'wait'}) }}'
+                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '2000', state: 'wait'}) }}'
             },
             netport_all_2000: {
-                route: '{{ path('tesla_system_info_netportconnections', {port: '2000', state: 'all'}) }}'
+                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '2000', state: 'all'}) }}'
             },
             netport_est_9000: {
-                route: '{{ path('tesla_system_info_netportconnections', {port: '9000', state: 'established'}) }}'
+                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '9000', state: 'established'}) }}'
             },
             netport_wait_9000: {
-                route: '{{ path('tesla_system_info_netportconnections', {port: '9000', state: 'wait'}) }}'
+                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '9000', state: 'wait'}) }}'
             },
             netport_all_9000: {
-                route: '{{ path('tesla_system_info_netportconnections', {port: '9000', state: 'all'}) }}'
+                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '9000', state: 'all'}) }}'
             },
             netport_est_8090: {
-                route: '{{ path('tesla_system_info_netportconnections', {port: '8090', state: 'established'}) }}'
+                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '8090', state: 'established'}) }}'
             },
             netport_wait_8090: {
-                route: '{{ path('tesla_system_info_netportconnections', {port: '8090', state: 'wait'}) }}'
+                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '8090', state: 'wait'}) }}'
             },
             netport_all_8090: {
-                route: '{{ path('tesla_system_info_netportconnections', {port: '8090', state: 'all'}) }}'
+                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '8090', state: 'all'}) }}'
             },
             netport_est_3306: {
-                route: '{{ path('tesla_system_info_netportconnections', {port: '3306', state: 'established'}) }}'
+                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '3306', state: 'established'}) }}'
             },
             netport_wait_3306: {
-                route: '{{ path('tesla_system_info_netportconnections', {port: '3306', state: 'wait'}) }}'
+                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '3306', state: 'wait'}) }}'
             },
             netport_all_3306: {
-                route: '{{ path('tesla_system_info_netportconnections', {port: '3306', state: 'all'}) }}'
+                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '3306', state: 'all'}) }}'
             },
             netport_est_11211: {
-                route: '{{ path('tesla_system_info_netportconnections', {port: '11211', state: 'established'}) }}'
+                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '11211', state: 'established'}) }}'
             },
             netport_wait_11211: {
-                route: '{{ path('tesla_system_info_netportconnections', {port: '11211', state: 'wait'}) }}'
+                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '11211', state: 'wait'}) }}'
             },
             netport_all_11211: {
-                route: '{{ path('tesla_system_info_netportconnections', {port: '11211', state: 'all'}) }}'
+                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '11211', state: 'all'}) }}'
             }
         };
 

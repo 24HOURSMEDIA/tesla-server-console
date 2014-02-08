@@ -6,11 +6,11 @@
  * Time: 23:14
  */
 
-namespace Tesla\SystemInfo\Monitor;
+namespace Tesla\SystemInfo\Poll;
 
-use Tesla\SystemInfo\Exception\MonitorException;
+use Tesla\SystemInfo\Exception\PollException;
 
-class CpuUsageMonitor implements MonitorInterface
+class CpuUsagePollHandler implements PollHandlerInterface
 {
 
     private function getStats()
@@ -67,13 +67,13 @@ class CpuUsageMonitor implements MonitorInterface
             case 'steal':
                 return $stats['steal'];
             default:
-                throw new MonitorException('CpuUsageMonitor: invalid type ' . $type . ' - must be user,nice,sys or idle');
+                throw new PollException('CpuUsagePollHandler: invalid type ' . $type . ' - must be user,nice,sys or idle');
         }
     }
 
     /**
      * Get a more comprehensive monitor result
-     * @return MonitorResult
+     * @return PollResult
      */
     function getResult($type = "user")
     {
@@ -81,7 +81,7 @@ class CpuUsageMonitor implements MonitorInterface
         $title = 'cpu ' . $type . ' (%)';
         $inverse = $type == 'idle';
 
-        return MonitorResult::create($title, $value)->setMin(0)->setMax(100)->setInverse($inverse);
+        return PollResult::create($title, $value)->setMin(0)->setMax(100)->setInverse($inverse);
     }
 
 

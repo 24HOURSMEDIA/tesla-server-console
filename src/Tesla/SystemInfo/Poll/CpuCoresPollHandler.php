@@ -6,10 +6,10 @@
  * Time: 22:02
  */
 
-namespace Tesla\SystemInfo\Monitor;
+namespace Tesla\SystemInfo\Poll;
 
 
-class CpuCoresMonitor implements MonitorInterface
+class CpuCoresPollHandler implements PollHandlerInterface
 {
 
     /**
@@ -56,13 +56,13 @@ class CpuCoresMonitor implements MonitorInterface
 
     /**
      * Get a more comprehensive monitor result
-     * @return MonitorResult
+     * @return PollResult
      */
     function getResult()
     {
         $cores = $this->getValue();
 
-        return MonitorResult::create('cpu cores', $cores)->setMin(0)->setMax($cores);
+        return PollResult::create('cpu cores', $cores)->setMin(0)->setMax($cores);
     }
 
 

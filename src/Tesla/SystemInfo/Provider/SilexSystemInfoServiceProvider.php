@@ -8,15 +8,13 @@
 
 namespace Tesla\SystemInfo\Provider;
 
-
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Symfony\Component\HttpFoundation\Response;
-use Tesla\SystemInfo\Monitor\CpuCoresMonitor;
-use Tesla\SystemInfo\Monitor\CpuUsageMonitor;
-use Tesla\SystemInfo\Monitor\LoadAvgMonitor;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Tesla\SystemInfo\Monitor\NetPortConnectionsMonitor;
+use Tesla\SystemInfo\Poll\CpuCoresPollHandler;
+use Tesla\SystemInfo\Poll\CpuUsagePollHandler;
+use Tesla\SystemInfo\Poll\LoadAvgPollHandler;
+use Tesla\SystemInfo\Poll\NetPortConnectionsPollHandler;
 
 class SilexSystemInfoServiceProvider implements ServiceProviderInterface
 {
@@ -30,24 +28,24 @@ class SilexSystemInfoServiceProvider implements ServiceProviderInterface
      */
     public function register(Application $app)
     {
-        $app['tesla_systeminfo_cpucores.monitor'] = $app->share(
+        $app['tesla_systeminfo_cpucores.poll_handler'] = $app->share(
             function () {
-                return new CpuCoresMonitor();
+                return new CpuCoresPollHandler();
             }
         );
-        $app['tesla_systeminfo_loadavg.monitor'] = $app->share(
+        $app['tesla_systeminfo_loadavg.poll_handler'] = $app->share(
             function () use ($app) {
-                return new LoadAvgMonitor($app['tesla_systeminfo_cpucores.monitor']);
+                return new LoadAvgPollHandler($app['tesla_systeminfo_cpucores.poll_handler']);
             }
         );
-        $app['tesla_systeminfo_cpuusage.monitor'] = $app->share(
+        $app['tesla_systeminfo_cpuusage.poll_handler'] = $app->share(
             function () use ($app) {
-                return new CpuUsageMonitor();
+                return new CpuUsagePollHandler();
             }
         );
-        $app['tesla_systeminfo_netportconnections.monitor'] = $app->share(
+        $app['tesla_systeminfo_netportconnections.poll_handler'] = $app->share(
             function () use ($app) {
-                return new NetPortConnectionsMonitor();
+                return new NetPortConnectionsPollHandler();
             }
         );
 
@@ -62,7 +60,7 @@ class SilexSystemInfoServiceProvider implements ServiceProviderInterface
      */
     public function boot(Application $app)
     {
-        $routePrefix = '/tesla/system-info';
+        $routePrefix = '/tesla/system-info/poll';
         $serializer = $app['serializer'];
 
         $slowCachetime = 30;
@@ -72,51 +70,51 @@ class SilexSystemInfoServiceProvider implements ServiceProviderInterface
         $app->get(
             $routePrefix . '/loadavg/{interval}',
             function ($interval) use ($app, $serializer, $fastCachetime, $slowCachetime, $defaultCachetime) {
-                $result = $app['tesla_systeminfo_loadavg' . '.monitor']->getResult($interval);
+                $result = $app['tesla_systeminfo_loadavg' . '.poll_handler']->getResult($interval);
                 $json = $serializer->serialize($result, 'json');
                 $response = Response::create($json)->setPrivate()->setMaxAge($fastCachetime);
                 $response->headers->set('content-type', 'application/json');
 
                 return $response;
             }
-        )->bind('tesla_system_info_loadavg');
+        )->bind('tesla_systeminfo_poll_loadavg');
         $app->get(
             $routePrefix . '/cpuusage/{type}',
             function ($type) use ($app, $serializer, $fastCachetime, $slowCachetime, $defaultCachetime) {
-                $result = $app['tesla_systeminfo_cpuusage' . '.monitor']->getResult($type);
+                $result = $app['tesla_systeminfo_cpuusage' . '.poll_handler']->getResult($type);
                 $json = $serializer->serialize($result, 'json');
                 $response = Response::create($json)->setPrivate()->setMaxAge($slowCachetime);
                 $response->headers->set('content-type', 'application/json');
 
                 return $response;
             }
-        )->bind('tesla_system_info_cpuusage');
+        )->bind('tesla_systeminfo_poll_cpuusage');
         $app->get(
             $routePrefix . '/netportconnections/{port}/{state}',
             function ($port, $state) use ($app, $serializer, $fastCachetime, $slowCachetime, $defaultCachetime) {
-                $result = $app['tesla_systeminfo_netportconnections' . '.monitor']->getResult($port, $state);
+                $result = $app['tesla_systeminfo_netportconnections' . '.poll_handler']->getResult($port, $state);
                 $json = $serializer->serialize($result, 'json');
                 $response = Response::create($json)->setPrivate()->setMaxAge($defaultCachetime);
                 $response->headers->set('content-type', 'application/json');
 
                 return $response;
             }
-        )->bind('tesla_system_info_netportconnections');
+        )->bind('tesla_systeminfo_poll_netportconnections');
 
+        // autoload simple services
         $services = array('cpucores');
-
         foreach ($services as $serviceId) {
             $app->get(
                 $routePrefix . '/' . $serviceId,
                 function () use ($app, $serializer, $serviceId, $fastCachetime, $slowCachetime, $defaultCachetime) {
-                    $result = $app['tesla_systeminfo_' . $serviceId . '.monitor']->getResult();
+                    $result = $app['tesla_systeminfo_' . $serviceId . '.poll_handler']->getResult();
                     $json = $serializer->serialize($result, 'json');
                     $response = Response::create($json)->setPrivate()->setMaxAge($defaultCachetime);
                     $response->headers->set('content-type', 'application/json');
 
                     return $response;
                 }
-            )->bind('tesla_system_info_' . $serviceId);
+            )->bind('tesla_systeminfo_poll_' . $serviceId);
         }
 
     }

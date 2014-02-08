@@ -6,18 +6,18 @@
  * Time: 21:35
  */
 
-namespace Tesla\SystemInfo\Monitor;
+namespace Tesla\SystemInfo\Poll;
 
 
-use Tesla\SystemInfo\Exception\MonitorException;
+use Tesla\SystemInfo\Exception\PollException;
 
-class LoadAvgMonitor implements MonitorInterface
+class LoadAvgPollHandler implements PollHandlerInterface
 {
 
     private $numCores = 1;
     private $maxLevel = 1;
 
-    function __construct(CpuCoresMonitor $cpuCores)
+    function __construct(CpuCoresPollHandler $cpuCores)
     {
         $this->numCores = $cpuCores->getValue();
         $this->maxLevel = $this->numCores;
@@ -34,7 +34,7 @@ class LoadAvgMonitor implements MonitorInterface
             case 15:
                 return $load[2];
             default:
-                throw new MonitorException('LoadAvgMonitor: invalid interval ' . $interval . ' - must be 1, 5 or 15');
+                throw new PollException('LoadAvgPollHandler: invalid interval ' . $interval . ' - must be 1, 5 or 15');
         }
 
     }
@@ -44,7 +44,7 @@ class LoadAvgMonitor implements MonitorInterface
         $value = $this->getValue($interval);
         $title = 'load avg. ' . $interval . ' min';
 
-        return MonitorResult::create($title, (float)sprintf('%0.2f', $value))->setMin(0)->setMax($this->maxLevel);
+        return PollResult::create($title, (float)sprintf('%0.2f', $value))->setMin(0)->setMax($this->maxLevel);
     }
 
 } 

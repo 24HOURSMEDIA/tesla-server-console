@@ -6,10 +6,10 @@
  * Time: 21:41
  */
 
-namespace Tesla\SystemInfo\Monitor;
+namespace Tesla\SystemInfo\Poll;
 
 
-interface MonitorInterface
+interface PollHandlerInterface
 {
 
     /**
@@ -20,7 +20,7 @@ interface MonitorInterface
 
     /**
      * Get a more comprehensive monitor result
-     * @return MonitorResult
+     * @return PollResult
      */
     function getResult();
 } 
