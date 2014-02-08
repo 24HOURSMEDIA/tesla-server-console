@@ -12,7 +12,15 @@
             }
         },
         "panels": {
-
+            "overview": {
+                "title": "overview",
+                "items": [
+                    {
+                        "type": "poll",
+                        "service": "loadavg1"
+                    }
+                ]
+            }
         }
     }
 
