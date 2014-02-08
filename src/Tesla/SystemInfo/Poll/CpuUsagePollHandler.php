@@ -13,9 +13,13 @@ use Tesla\SystemInfo\Exception\PollException;
 class CpuUsagePollHandler implements PollHandlerInterface
 {
 
+    private $stats = null;
+
     private function getStats()
     {
-
+        if ($this->stats) {
+            return $this->stats;
+        }
         $output = array();
         exec('top -b -n 2 |grep ^Cpu', $output);
         $lines = explode(' ', $output[1]);
@@ -41,7 +45,7 @@ class CpuUsagePollHandler implements PollHandlerInterface
             }
         }
 
-        return $stats;
+        return $this->stats = $stats;
 
 
     }
@@ -66,6 +70,8 @@ class CpuUsagePollHandler implements PollHandlerInterface
                 return $stats['wait'];
             case 'steal':
                 return $stats['steal'];
+            case 'used':
+                return 100 - $stats['idle'];
             default:
                 throw new PollException('CpuUsagePollHandler: invalid type ' . $type . ' - must be user,nice,sys or idle');
         }

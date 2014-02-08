@@ -63,9 +63,9 @@ class SilexSystemInfoServiceProvider implements ServiceProviderInterface
         $routePrefix = '/tesla/system-info/poll';
         $serializer = $app['serializer'];
 
-        $slowCachetime = 30;
-        $defaultCachetime = 14;
-        $fastCachetime = 5;
+        $slowCachetime = 15;
+        $defaultCachetime = 10;
+        $fastCachetime = 1;
 
         $app->get(
             $routePrefix . '/loadavg/{interval}',
@@ -94,7 +94,7 @@ class SilexSystemInfoServiceProvider implements ServiceProviderInterface
             function ($port, $state) use ($app, $serializer, $fastCachetime, $slowCachetime, $defaultCachetime) {
                 $result = $app['tesla_systeminfo_netportconnections' . '.poll_handler']->getResult($port, $state);
                 $json = $serializer->serialize($result, 'json');
-                $response = Response::create($json)->setPrivate()->setMaxAge($defaultCachetime);
+                $response = Response::create($json)->setPrivate()->setMaxAge($fastCachetime);
                 $response->headers->set('content-type', 'application/json');
 
                 return $response;

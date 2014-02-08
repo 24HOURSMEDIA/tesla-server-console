@@ -28,6 +28,15 @@
                     }
                 }
             },
+            "cpuusage_used": {
+                "title": "cpu used",
+                "route": {
+                    "name": "tesla_systeminfo_poll_cpuusage",
+                    "parameters": {
+                        "type": "used"
+                    }
+                }
+            },
             "networkconns_all_est": {
                 "title": "network conns. est.",
                 "route": {
@@ -49,7 +58,7 @@
                     },
                     {
                         "type": "poll",
-                        "service": "cpuusage_idle"
+                        "service": "cpuusage_used"
                     },
                     {
                         "type": "poll",
