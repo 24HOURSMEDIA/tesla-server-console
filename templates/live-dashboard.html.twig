@@ -33,11 +33,17 @@
             netport_est_all: {
                 route: '{{ path('tesla_system_info_netportconnections', {port: 'all', state: 'established'}) }}'
             },
+            netport_wait_all: {
+                route: '{{ path('tesla_system_info_netportconnections', {port: 'all', state: 'wait'}) }}'
+            },
             netport_all_all: {
                 route: '{{ path('tesla_system_info_netportconnections', {port: 'all', state: 'all'}) }}'
             },
             netport_est_80: {
                 route: '{{ path('tesla_system_info_netportconnections', {port: '80', state: 'established'}) }}'
+            },
+            netport_wait_80: {
+                route: '{{ path('tesla_system_info_netportconnections', {port: '80', state: 'wait'}) }}'
             },
             netport_all_80: {
                 route: '{{ path('tesla_system_info_netportconnections', {port: '80', state: 'all'}) }}'
@@ -45,11 +51,17 @@
             netport_est_2000: {
                 route: '{{ path('tesla_system_info_netportconnections', {port: '2000', state: 'established'}) }}'
             },
+            netport_wait_2000: {
+                route: '{{ path('tesla_system_info_netportconnections', {port: '2000', state: 'wait'}) }}'
+            },
             netport_all_2000: {
                 route: '{{ path('tesla_system_info_netportconnections', {port: '2000', state: 'all'}) }}'
             },
             netport_est_9000: {
                 route: '{{ path('tesla_system_info_netportconnections', {port: '9000', state: 'established'}) }}'
+            },
+            netport_wait_9000: {
+                route: '{{ path('tesla_system_info_netportconnections', {port: '9000', state: 'wait'}) }}'
             },
             netport_all_9000: {
                 route: '{{ path('tesla_system_info_netportconnections', {port: '9000', state: 'all'}) }}'
@@ -57,17 +69,26 @@
             netport_est_8090: {
                 route: '{{ path('tesla_system_info_netportconnections', {port: '8090', state: 'established'}) }}'
             },
+            netport_wait_8090: {
+                route: '{{ path('tesla_system_info_netportconnections', {port: '8090', state: 'wait'}) }}'
+            },
             netport_all_8090: {
                 route: '{{ path('tesla_system_info_netportconnections', {port: '8090', state: 'all'}) }}'
             },
             netport_est_3306: {
                 route: '{{ path('tesla_system_info_netportconnections', {port: '3306', state: 'established'}) }}'
             },
+            netport_wait_3306: {
+                route: '{{ path('tesla_system_info_netportconnections', {port: '3306', state: 'wait'}) }}'
+            },
             netport_all_3306: {
                 route: '{{ path('tesla_system_info_netportconnections', {port: '3306', state: 'all'}) }}'
             },
             netport_est_11211: {
                 route: '{{ path('tesla_system_info_netportconnections', {port: '11211', state: 'established'}) }}'
+            },
+            netport_wait_11211: {
+                route: '{{ path('tesla_system_info_netportconnections', {port: '11211', state: 'wait'}) }}'
             },
             netport_all_11211: {
                 route: '{{ path('tesla_system_info_netportconnections', {port: '11211', state: 'all'}) }}'

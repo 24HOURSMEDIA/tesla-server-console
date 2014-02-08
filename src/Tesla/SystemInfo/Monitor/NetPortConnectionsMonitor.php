@@ -28,8 +28,8 @@ class NetPortConnectionsMonitor implements MonitorInterface
         $state = strtoupper($state);
         $port = $port == 'all' ? $port : (int)$port;
         $port = (int)$port;
-        if (!in_array($state, array('ALL', 'LISTEN', 'ESTABLISHED'))) {
-            throw new MonitorException('state must be one of all, listen, established');
+        if (!in_array($state, array('ALL', 'LISTEN', 'ESTABLISHED', 'WAIT'))) {
+            throw new MonitorException('state must be one of all, listen, established,wait');
         }
         // make a command
         $cmd = 'netstat -an | grep ' . escapeshellarg($port == 'all' ? ':' : ':' . $port) . ' ';
@@ -50,16 +50,20 @@ class NetPortConnectionsMonitor implements MonitorInterface
      */
     function getResult($port = 'all', $state = 'all')
     {
-        $max = 128;
-        if ($port == 'all') {
-            $max = $max * 8; // 6 is num running services
-        }
+        $max = 400; // reasonable amount of ports listening
         if ($state == 'all') {
-            $max = $max * 8;
+            $max = $max * 4;
+        }
+        if ($port == 'all') {
+            $max = $max * 4; // 6 is num running services
         }
 
+
+        $stateTitles = array('ALL' => 'ALL', 'ESTABLISHED' => 'EST', 'WAIT' => 'WAIT', 'LISTEN' => 'LISTEN');
+        $title = 'port :' . $port . ' ' . $stateTitles[strtoupper($state)];
+
         return MonitorResult::create(
-            $state . ' conn. on ' . ($port == 'all' ? 'all ports' : 'port :' . $port),
+            $title,
             $this->getValue($port, $state)
         )->setMin(0)->setMax($max);
     }
