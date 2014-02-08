@@ -81,7 +81,9 @@ class CpuUsagePollHandler implements PollHandlerInterface
         $title = 'cpu ' . $type . ' (%)';
         $inverse = $type == 'idle';
 
-        return PollResult::create($title, $value)->setMin(0)->setMax(100)->setInverse($inverse);
+        return PollResult::create($title, (float)sprintf('%0.2f', $value))->setMin(0)->setMax(100)->setUnit(
+            '%'
+        )->setInverse($inverse);
     }
 
 

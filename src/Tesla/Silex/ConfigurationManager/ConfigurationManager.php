@@ -78,9 +78,9 @@ class ConfigurationManager
                 }
             }
         }
-        if (false !== strpos($encoded, '%')) {
-            throw new ConfigurationException('Unresolved parameters found in configuration.');
-        }
+        //if (false !== strpos($encoded, '%')) {
+        //    throw new ConfigurationException('Unresolved parameters found in configuration.');
+        //}
         $this->config = json_decode($encoded, true);
         $t = microtime(true) - $t;
         // echo($t);

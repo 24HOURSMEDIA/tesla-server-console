@@ -13,6 +13,8 @@ use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Tesla\WebserverConsole\Controller\LogController;
 use Symfony\Component\HttpFoundation\Request;
+use Tesla\WebserverConsole\Panel\PanelFactory;
+use Tesla\WebserverConsole\Poll\PollItemFactory;
 
 class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
 {
@@ -31,6 +33,26 @@ class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
                 return new LogController($app['twig']);
             }
         );
+
+        // factory for poll services
+        $app['tesla_webserverconsole_pollitem.factory'] = $app->share(
+            function () use ($app) {
+                return new PollItemFactory(
+                    $app['config']->getSetting('tesla-server-console', 'poll'),
+                    $app['url_generator']
+                );
+            }
+        );
+
+        // factory for panels
+        $app['tesla_webserverconsole_panel.factory'] = $app->share(
+            function () use ($app) {
+                return new PanelFactory($app['config']->getSetting(
+                    'tesla-server-console',
+                    'panels'
+                ), $app['tesla_webserverconsole_pollitem.factory']);
+            }
+        );
     }
 
     /**
@@ -46,9 +68,15 @@ class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
             '/',
             function () use ($app) {
 
+                $panelFactory = $app['tesla_webserverconsole_panel.factory'];
+                $panels = array(
+                    $panelFactory->get('overview')
+                );
+
                 return $app['twig']->render(
                     'index.html.twig',
                     array(
+                        'panels' => $panels,
                         '_server' => $_SERVER,
                         'server_name' => $app['config']->getParameter('console.server_name'),
                         'sapi_name' => php_sapi_name(),

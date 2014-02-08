@@ -4,23 +4,60 @@
             "loadavg1": {
                 "title": "load avg. 1 min.",
                 "route": {
-                    "path": "tesla_system_info_loadavg",
+                    "name": "tesla_systeminfo_poll_loadavg",
                     "parameters": {
                         "interval": 1
+                    }
+                }
+            },
+            "cpuusage_user": {
+                "title": "cpu user (%)",
+                "route": {
+                    "name": "tesla_systeminfo_poll_cpuusage",
+                    "parameters": {
+                        "type": "user"
+                    }
+                }
+            },
+            "cpuusage_idle": {
+                "title": "cpu idle (%)",
+                "route": {
+                    "name": "tesla_systeminfo_poll_cpuusage",
+                    "parameters": {
+                        "type": "idle"
+                    }
+                }
+            },
+            "networkconns_all_est": {
+                "title": "network conns. est.",
+                "route": {
+                    "name": "tesla_systeminfo_poll_netportconnections",
+                    "parameters": {
+                        "port": "all",
+                        "state": "established"
                     }
                 }
             }
         },
         "panels": {
             "overview": {
-                "title": "overview",
+                "title": "health summary",
                 "items": [
                     {
                         "type": "poll",
                         "service": "loadavg1"
+                    },
+                    {
+                        "type": "poll",
+                        "service": "cpuusage_idle"
+                    },
+                    {
+                        "type": "poll",
+                        "service": "networkconns_all_est"
                     }
                 ]
             }
+
         }
     }
 

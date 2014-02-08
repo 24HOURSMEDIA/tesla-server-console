@@ -66,7 +66,7 @@ class NetPortConnectionsPollHandler implements PollHandlerInterface
         return PollResult::create(
             $title,
             $this->getValue($port, $state)
-        )->setMin(0)->setMax($max);
+        )->setMin(0)->setMax($max)->setUnit('conns');
     }
 
 

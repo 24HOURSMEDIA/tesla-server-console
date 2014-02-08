@@ -3,6 +3,8 @@
 {% block content %}
 
 
+
+
     <div class="jumbotron" xmlns="http://www.w3.org/1999/html">
         <h1>Welcome to {{ app.config.parameter('console.server_name')|upper }}</h1>
     </div>
@@ -21,6 +23,8 @@
             </small>
         </div>
     </div>
+
+    {% include 'panels.html.twig' %}
 
     <ul>
         <li><a href="{{ path('php_phpinfo') }}">phpinfo</a></li>

@@ -17,6 +17,7 @@ class PollResult
     private $max;
     private $title = 'result';
     private $isInverse = false;
+    private $unit = '';
 
     function getId()
     {
@@ -137,6 +138,26 @@ class PollResult
     {
         return !$this->isInverse ? $this->getValue() > $this->getCriticalLevel() : $this->getValue(
             ) < $this->getCriticalLevel();
+    }
+
+    /**
+     * Set the unit
+     * @param string $unit
+     */
+    public function setUnit($unit)
+    {
+        $this->unit = $unit;
+
+        return $this;
+    }
+
+    /**
+     * Get the Unit
+     * @return string
+     */
+    public function getUnit()
+    {
+        return $this->unit;
     }
 
 

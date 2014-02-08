@@ -1,0 +1,130 @@
+{% if panels is defined %}
+
+    {% for panel in panels %}
+
+        <script>
+            var {{ panel.uid }} =
+            {
+
+                pollItems: {
+                    {% for item in panel.items %}
+
+                    {{ item.uid }}:
+                    {
+                        uid: "{{ item.uid }}",
+                                pollUrl
+                    :
+                        "{{ item.pollUrl }}",
+                                display
+                    :
+                        "{{ item.display }}",
+                                refreshInterval
+                    : {{ item.refreshInterval }}
+
+                    }
+                    {%  if not loop.last %},{% endif %}
+
+                    {% endfor %}
+
+                }
+            ,
+
+                loadPollItem: function (uid) {
+
+                    var item = this.pollItems[uid];
+
+                    $.ajax({
+                        dataType: "json",
+                        url: item.pollUrl,
+                        data: null,
+                        $progressbar: $('#' + item.uid + '_progressbar'),
+                        $value: $('#' + item.uid + '_value'),
+
+                        success: function (data) {
+                            var level = ((data.value - data.min) / (data.max - data.min)) * 100;
+                            this.$value.text(data.value + " " + data.unit);
+                            this.$progressbar.css('width', level + '%');
+                            var cls = 'progress-bar-success';
+                            if (data.warning == true) {
+                                cls = 'progress-bar-warning';
+                            }
+                            if (data.critical == true) {
+                                cls = 'progress-bar-danger';
+                            }
+                            this.$progressbar.removeClass('progress-bar-success').removeClass('progress-bar-warning').removeClass('progress-bar-danger').addClass(cls);
+
+                        }
+                    });
+
+
+                }
+            ,
+
+                start: function () {
+                    var self = this;
+                    for (var uid in this.pollItems) {
+                        item = this.pollItems[uid];
+                        this.loadPollItem(uid);
+
+                    }
+                    {% for item in panel.items %}
+                    window.setInterval(function () {
+                        self.loadPollItem("{{ item.uid }}")
+                    }, {{ item.refreshInterval }});
+                    {% endfor %}
+                }
+            }
+            ;
+
+            $(document).ready(function () {
+                {{ panel.uid }}.
+                start();
+            });
+        </script>
+
+        <div class="panel panel-info">
+            <div class="panel-heading">
+                <h3 class="panel-title"><span class="glyphicon glyphicon-stats"> {{ panel.title }}</span></h3>
+            </div>
+
+            <div class="panel-body">
+
+
+                {% for item in panel.items %}
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="row">
+                                <div class="col-sm-8">
+                                    <span class="glyphicon glyphicon-random"></span>&nbsp;&nbsp;{{ item.title }}
+                                </div>
+                                <div class="col-sm-4">
+                                    <span id="{{ item.uid ~ '_value' }}" style="white-space:nowrap">
+                                        <span class="glyphicon glyphicon-time"></span>
+                                    </span>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-sm-8">
+
+                            {% if item.display == 'progress' %}
+                                <div class="progress">
+                                    <div id="{{ item.uid ~ '_progressbar' }}" class="progress-bar progress-bar-success"
+                                         role="progressbar" aria-valuenow="00" aria-valuemin="0" aria-valuemax="100"
+                                         style="width: 00%">
+                                    </div>
+                                </div>
+                            {% endif %}
+                        </div>
+
+                    </div>
+
+                {% endfor %}
+            </div>
+
+        </div>
+
+    {% endfor %}
+
+{% endif %}
