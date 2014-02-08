@@ -1,0 +1,19 @@
+{
+    "tesla-server-console": {
+        "poll": {
+            "loadavg1": {
+                "title": "load avg. 1 min.",
+                "route": {
+                    "path": "tesla_system_info_loadavg",
+                    "parameters": {
+                        "interval": 1
+                    }
+                }
+            }
+        },
+        "panels": {
+
+        }
+    }
+
+}
