@@ -93,17 +93,15 @@
                 {% for item in panel.items %}
                     <div class="row">
                         <div class="col-sm-4">
-                            <div class="row">
-                                <div class="col-sm-8">
-                                    <span class="glyphicon glyphicon-random"></span>&nbsp;&nbsp;{{ item.title }}
-                                </div>
-                                <div class="col-sm-4">
-                                    <span id="{{ item.uid ~ '_value' }}" style="white-space:nowrap">
-                                        <span class="glyphicon glyphicon-time"></span>
-                                    </span>
-
-                                </div>
-                            </div>
+                            <table width="100%">
+                                <tr>
+                                    <td width="10" style="white-space:nowrap"><strong><span
+                                                    class="glyphicon glyphicon-random"></span>&nbsp;&nbsp;{{ item.title }}
+                                        </strong>&nbsp;</td>
+                                    <td id="{{ item.uid ~ '_value' }}" style="white-space:nowrap" align="right"><span
+                                                class="glyphicon glyphicon-time"></span></td>
+                                </tr>
+                            </table>
                         </div>
 
                         <div class="col-sm-8">

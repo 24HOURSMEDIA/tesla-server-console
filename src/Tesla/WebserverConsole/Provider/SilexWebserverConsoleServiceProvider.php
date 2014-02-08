@@ -70,7 +70,7 @@ class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
 
                 $panelFactory = $app['tesla_webserverconsole_panel.factory'];
                 $panels = array(
-                    $panelFactory->get('overview')
+                    $panelFactory->get('health-summary')
                 );
 
                 return $app['twig']->render(

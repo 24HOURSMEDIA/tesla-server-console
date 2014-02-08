@@ -49,8 +49,8 @@
             }
         },
         "panels": {
-            "overview": {
-                "title": "health summary",
+            "health-summary": {
+                "title": "%console.server_name% health summary",
                 "items": [
                     {
                         "type": "poll",
