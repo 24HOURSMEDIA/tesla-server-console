@@ -9,7 +9,11 @@
         <h1>Welcome to {{ app.config.parameter('console.server_name')|upper }}</h1>
     </div>
 
-    <div class="alert alert-info">
+
+
+    {% include 'panels.html.twig' %}
+
+    <div class="alert alert-default">
         <div align="center">
             <small>
 
@@ -23,8 +27,6 @@
             </small>
         </div>
     </div>
-
-    {% include 'panels.html.twig' %}
 
     <ul>
         <li><a href="{{ path('php_phpinfo') }}">phpinfo</a></li>
