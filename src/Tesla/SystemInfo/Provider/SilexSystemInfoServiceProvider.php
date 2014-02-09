@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Tesla\SystemInfo\Info\StorageDeviceInfoProvider;
 use Tesla\SystemInfo\Poll\CpuCoresPollHandler;
 use Tesla\SystemInfo\Poll\CpuUsagePollHandler;
+use Tesla\SystemInfo\Poll\DiskDirSizePollHandler;
 use Tesla\SystemInfo\Poll\DiskHighestUsagePollHandler;
 use Tesla\SystemInfo\Poll\DiskUsagePollHandler;
 use Tesla\SystemInfo\Poll\LoadAvgPollHandler;
@@ -63,6 +64,12 @@ class SilexSystemInfoServiceProvider implements ServiceProviderInterface
             }
         );
 
+
+        $app['tesla_systeminfo_diskdirsize.poll_handler'] = $app->share(
+            function () use ($app) {
+                return new DiskDirSizePollHandler();
+            }
+        );
         // informational
         $app['tesla_systeminfo_info.storagedeviceinfo_provider'] = $app->share(
             function () use ($app) {
@@ -148,6 +155,20 @@ class SilexSystemInfoServiceProvider implements ServiceProviderInterface
 
             }
         )->bind('tesla_systeminfo_diskusage')->assert('device', '[\w\-\._/]+');
+
+        $app->get(
+            $routePrefix . '/disks/dirsize/{dir}',
+            function ($dir) use ($app, $serializer, $fastCachetime, $slowCachetime, $defaultCachetime) {
+                $result = $app['tesla_systeminfo_diskdirsize.poll_handler']->getResult($dir);
+                $json = $serializer->serialize($result, 'json');
+                $response = Response::create($json)->setPrivate()->setMaxAge($slowCachetime);
+                $response->headers->set('content-type', 'application/json');
+
+                return $response;
+
+            }
+        )->bind('tesla_systeminfo_diskdirsize')->assert('dir', '[\w\-\._/]+');
+
 
         $infoRoutePrefix = '/tesla/system-info/info';
         $app->get(

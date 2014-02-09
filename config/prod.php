@@ -10,6 +10,7 @@ $app['config'] = $app->share(
             array(
                 $confDir . '/aws.conf.json',
                 $confDir . '/tesla-server-console.conf.json',
+                $confDir . '/tesla-user.conf.json',
             )
         );
 

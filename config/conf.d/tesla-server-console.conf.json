@@ -136,6 +136,25 @@
                     "name": "tesla_systeminfo_poll_disks_maxusage",
                     "parameters": {}
                 }
+            },
+
+            "disks_dirsize_var_log": {
+                "title": "size of /var/log",
+                "route": {
+                    "name": "tesla_systeminfo_diskdirsize",
+                    "parameters": {
+                        "dir": "/var/log"
+                    }
+                }
+            },
+            "disks_dirsize_var_cache_nginx": {
+                "title": "size of /var/cache/nginx",
+                "route": {
+                    "name": "tesla_systeminfo_diskdirsize",
+                    "parameters": {
+                        "dir": "/var/cache/nginx"
+                    }
+                }
             }
 
 
@@ -202,6 +221,14 @@
                     {
                         "type": "poll",
                         "service": "disks_maxusage"
+                    },
+                    {
+                        "type": "poll",
+                        "service": "disks_dirsize_var_log"
+                    },
+                    {
+                        "type": "poll",
+                        "service": "disks_dirsize_var_cache_nginx"
                     }
                 ]
             }
@@ -225,6 +252,14 @@
                 "title": "Disc",
                 "panels": ["diskusage"]
             }
+        },
+        "etc": {
+            "files": [
+                {
+                    "dirs": "/var/log/",
+                    "name": "*"
+                }
+            ]
         }
 
     }

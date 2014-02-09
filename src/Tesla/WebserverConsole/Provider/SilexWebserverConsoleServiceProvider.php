@@ -18,6 +18,7 @@ use Tesla\WebserverConsole\Exception\WebserverConsoleException;
 use Tesla\WebserverConsole\Panel\PanelFactory;
 use Tesla\WebserverConsole\Poll\PollItemFactory;
 use Tesla\WebserverConsole\Panel\PanelsetFactory;
+use Tesla\WebserverConsole\Controller\EtcController;
 
 class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
 {
@@ -122,6 +123,11 @@ class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
         $app['tesla_webserverconsole_log.controller'] = $app->share(
             function () use ($app) {
                 return new LogController($app['twig']);
+            }
+        );
+        $app['tesla_webserverconsole_etc.controller'] = $app->share(
+            function () use ($app) {
+                return new EtcController($app['twig'], $app['config']->getSetting('tesla-server-console', 'etc'));
             }
         );
 
@@ -268,6 +274,13 @@ class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
                 return $app['tesla_webserverconsole_log.controller']->indexAction($request);
             }
         )->bind('tesla_webserverconsole_log');;
+
+        $app->get(
+            '/tesla-server-console/etc',
+            function (Request $request) use ($app) {
+                return $app['tesla_webserverconsole_etc.controller']->indexAction($request);
+            }
+        )->bind('tesla_webserverconsole_etc');
 
 
     }

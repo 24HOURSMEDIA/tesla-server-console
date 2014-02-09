@@ -1,0 +1,51 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+
+
+    <div class="row">
+
+
+        <div class="col-sm-3">
+            <h1>&nbsp;</h1>
+            <ul class="list-group">
+                <li class="list-group-item"><a href="{{ path('tesla_webserverconsole_etc', {ulimit:1}) }}">Ulimit</a>
+                </li>
+                <li class="list-group-item"><a href="{{ path('tesla_webserverconsole_etc', {sysctl:1}) }}">SysCtl</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-sm-8">
+            <h1>System configuration files</h1>
+        </div>
+
+        {% if ulimit is defined %}
+            <div class="col-sm-4">
+                <strong>ulimit -a SOFT</strong>
+                {% spaceless %}
+                    <pre>
+                    <small>{% for l in ulimit.soft %}{{ l }}<br/>{% endfor %}</small></pre>{% endspaceless %}
+
+            </div>
+            <div class="col-sm-4">
+                <strong>ulimit -a HARD</strong>
+
+                {% spaceless %}
+                    <pre>
+                    <small>{% for l in ulimit.hard %}{{ l }}<br/>{% endfor %}</small></pre>{% endspaceless %}
+            </div>
+        {% endif %}
+
+        {% if sysctl is defined %}
+            <div class="col-sm-8">
+                <strong>sysctl</strong>
+                {% spaceless %}
+                    <pre>
+                    <small>{% for l in sysctl %}{{ l }}<br/>{% endfor %}</small></pre>{% endspaceless %}
+
+            </div>
+        {% endif %}
+    </div>
+
+{% endblock %}
