@@ -46,6 +46,13 @@
                         "state": "established"
                     }
                 }
+            },
+            "tesla_systeminfo_poll_netportconnections": {
+                "title": "device with max usage",
+                "route": {
+                    "name": "tesla_systeminfo_poll_disks_maxusage",
+                    "parameters": {}
+                }
             }
         },
         "panels": {
@@ -63,6 +70,10 @@
                     {
                         "type": "poll",
                         "service": "networkconns_all_est"
+                    },
+                    {
+                        "type": "poll",
+                        "service": "tesla_systeminfo_poll_netportconnections"
                     }
                 ]
             }

@@ -11,10 +11,13 @@ namespace Tesla\SystemInfo\Provider;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Tesla\SystemInfo\Info\StorageDeviceInfoProvider;
 use Tesla\SystemInfo\Poll\CpuCoresPollHandler;
 use Tesla\SystemInfo\Poll\CpuUsagePollHandler;
+use Tesla\SystemInfo\Poll\DiskHighestUsagePollHandler;
 use Tesla\SystemInfo\Poll\LoadAvgPollHandler;
 use Tesla\SystemInfo\Poll\NetPortConnectionsPollHandler;
+use Tesla\SystemInfo\Poll\PollResult;
 
 class SilexSystemInfoServiceProvider implements ServiceProviderInterface
 {
@@ -48,6 +51,18 @@ class SilexSystemInfoServiceProvider implements ServiceProviderInterface
                 return new NetPortConnectionsPollHandler();
             }
         );
+        $app['tesla_systeminfo_diskhighestusage.poll_handler'] = $app->share(
+            function () use ($app) {
+                return new DiskHighestUsagePollHandler($app['tesla_systeminfo_info.storagedeviceinfo_provider']);
+            }
+        );
+
+        // informational
+        $app['tesla_systeminfo_info.storagedeviceinfo_provider'] = $app->share(
+            function () use ($app) {
+                return new StorageDeviceInfoProvider();
+            }
+        );
 
     }
 
@@ -66,6 +81,7 @@ class SilexSystemInfoServiceProvider implements ServiceProviderInterface
         $slowCachetime = 15;
         $defaultCachetime = 10;
         $fastCachetime = 1;
+        $extraLongCachetime = 3600;
 
         $app->get(
             $routePrefix . '/loadavg/{interval}',
@@ -92,7 +108,7 @@ class SilexSystemInfoServiceProvider implements ServiceProviderInterface
         $app->get(
             $routePrefix . '/netportconnections/{port}/{state}',
             function ($port, $state) use ($app, $serializer, $fastCachetime, $slowCachetime, $defaultCachetime) {
-                $result = $app['tesla_systeminfo_netportconnections' . '.poll_handler']->getResult($port, $state);
+                $result = $app['tesla_systeminfo_netportconnections.poll_handler']->getResult($port, $state);
                 $json = $serializer->serialize($result, 'json');
                 $response = Response::create($json)->setPrivate()->setMaxAge($fastCachetime);
                 $response->headers->set('content-type', 'application/json');
@@ -100,22 +116,33 @@ class SilexSystemInfoServiceProvider implements ServiceProviderInterface
                 return $response;
             }
         )->bind('tesla_systeminfo_poll_netportconnections');
+        $app->get(
+            $routePrefix . '/disks',
+            function () use ($app, $serializer, $fastCachetime, $slowCachetime, $defaultCachetime) {
+                $result = $app['tesla_systeminfo_diskhighestusage.poll_handler']->getResult();
+                $json = $serializer->serialize($result, 'json');
+                $response = Response::create($json)->setPrivate()->setMaxAge($fastCachetime);
+                $response->headers->set('content-type', 'application/json');
 
-        // autoload simple services
-        $services = array('cpucores');
-        foreach ($services as $serviceId) {
-            $app->get(
-                $routePrefix . '/' . $serviceId,
-                function () use ($app, $serializer, $serviceId, $fastCachetime, $slowCachetime, $defaultCachetime) {
-                    $result = $app['tesla_systeminfo_' . $serviceId . '.poll_handler']->getResult();
-                    $json = $serializer->serialize($result, 'json');
-                    $response = Response::create($json)->setPrivate()->setMaxAge($defaultCachetime);
-                    $response->headers->set('content-type', 'application/json');
+                return $response;
 
-                    return $response;
-                }
-            )->bind('tesla_systeminfo_poll_' . $serviceId);
-        }
+            }
+        )->bind('tesla_systeminfo_poll_disks_maxusage');
+
+
+        $infoRoutePrefix = '/tesla/system-info/info';
+        $app->get(
+            $infoRoutePrefix . '/disks/{infoType}',
+            function ($infoType) use ($app, $serializer, $fastCachetime, $slowCachetime, $defaultCachetime) {
+                $result = $app['tesla_systeminfo_info.storagedeviceinfo_provider']->getInfo($infoType);
+                $json = $serializer->serialize($result, 'json');
+                $response = Response::create($json)->setPrivate()->setMaxAge(0);
+                $response->headers->set('content-type', 'application/json');
+
+                return $response;
+            }
+        )->value('infoType', false)->bind('tesla_systeminfo_info_disks');
+
 
     }
 
