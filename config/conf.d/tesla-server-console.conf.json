@@ -233,7 +233,53 @@
                         "key": "num_entries"
                     }
                 }
+            },
+            "php_meminfo_total": {
+                "title": "total memory",
+                "route": {
+                    "name": "tesla_systeminfo_meminfo",
+                    "parameters": {
+                        "key": "memtotal"
+                    }
+                }
+            },
+            "php_meminfo_free": {
+                "title": "free memory",
+                "route": {
+                    "name": "tesla_systeminfo_meminfo",
+                    "parameters": {
+                        "key": "memfree"
+                    }
+                }
+            },
+            "php_meminfo_buffers": {
+                "title": "buffers",
+                "route": {
+                    "name": "tesla_systeminfo_meminfo",
+                    "parameters": {
+                        "key": "buffers"
+                    }
+                }
+            },
+            "php_meminfo_cached": {
+                "title": "cached",
+                "route": {
+                    "name": "tesla_systeminfo_meminfo",
+                    "parameters": {
+                        "key": "cached"
+                    }
+                }
+            },
+            "php_meminfo_swap": {
+                "title": "swap",
+                "route": {
+                    "name": "tesla_systeminfo_meminfo",
+                    "parameters": {
+                        "key": "swapcached"
+                    }
+                }
             }
+
         },
         "panels": {
             "health-summary": {
@@ -246,6 +292,10 @@
                     {
                         "type": "poll",
                         "service": "cpuusage_used"
+                    },
+                    {
+                        "type": "poll",
+                        "service": "php_meminfo_free"
                     },
                     {
                         "type": "poll",
@@ -350,9 +400,33 @@
                         "service": "php_apc_stat_user_mem_size"
                     }
                 ]
+            },
+            "memory": {
+                "title": "Memory",
+                "items": [
+
+                    {
+                        "type": "poll",
+                        "service": "php_meminfo_total"
+                    },
+                    {
+                        "type": "poll",
+                        "service": "php_meminfo_free"
+                    },
+                    {
+                        "type": "poll",
+                        "service": "php_meminfo_buffers"
+                    },
+                    {
+                        "type": "poll",
+                        "service": "php_meminfo_cached"
+                    },
+                    {
+                        "type": "poll",
+                        "service": "php_meminfo_swap"
+                    }
+                ]
             }
-
-
         },
         "panelsets": {
             "default": {
@@ -362,6 +436,10 @@
             "cpu_load": {
                 "title": "Cpu / Load average",
                 "panels": ["load-average", "cpu-usage"]
+            },
+            "memory": {
+                "title": "Memory",
+                "panels": ["memory"]
             },
             "netconn": {
                 "title": "NetConn",
@@ -449,5 +527,5 @@
         }
 
     }
-}
 
+}
