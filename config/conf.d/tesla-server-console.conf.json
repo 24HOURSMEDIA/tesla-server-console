@@ -118,6 +118,24 @@
                     }
                 }
             },
+            "cpuusage_steal": {
+                "title": "cpu stolen",
+                "route": {
+                    "name": "tesla_systeminfo_poll_cpuusage",
+                    "parameters": {
+                        "type": "steal"
+                    }
+                }
+            },
+            "cpuusage_system": {
+                "title": "cpu system",
+                "route": {
+                    "name": "tesla_systeminfo_poll_cpuusage",
+                    "parameters": {
+                        "type": "system"
+                    }
+                }
+            },
             "networkconns_all_est": {
                 "title": "network conns. est.",
                 "route": {
@@ -184,16 +202,25 @@
                 "items": [
                     {
                         "type": "poll",
+                        "service": "cpuusage_used"
+                    },
+                    {
+                        "type": "poll",
                         "service": "cpuusage_user"
                     },
                     {
                         "type": "poll",
-                        "service": "cpuusage_idle"
+                        "service": "cpuusage_system"
                     },
                     {
                         "type": "poll",
-                        "service": "cpuusage_used"
+                        "service": "cpuusage_steal"
+                    },
+                    {
+                        "type": "poll",
+                        "service": "cpuusage_idle"
                     }
+
                 ]
             },
             "load-average": {
@@ -270,6 +297,54 @@
                     "enabled": true,
                     "dirs": ["/etc/apache*"],
                     "name": "*"
+                }
+            }
+        },
+        "stats": {
+            "enabled": true,
+            "prefix": "poll_",
+            "suffix": ".txt",
+            "datadir": "%console.stats.datadir%",
+            "polls": {
+                "loadavg1": {
+                    "service": "loadavg1",
+                    "interval": 60,
+                    "enabled": true
+                },
+                "cpuusage_used": {
+                    "service": "cpuusage_used",
+                    "interval": 60,
+                    "enabled": true
+                },
+                "cpuusage_user": {
+                    "service": "cpuusage_user",
+                    "interval": 60,
+                    "enabled": true
+                },
+                "cpuusage_idle": {
+                    "service": "cpuusage_idle",
+                    "interval": 60,
+                    "enabled": true
+                },
+                "cpuusage_system": {
+                    "service": "cpuusage_system",
+                    "interval": 60,
+                    "enabled": true
+                },
+                "cpuusage_steal": {
+                    "service": "cpuusage_steal",
+                    "interval": 60,
+                    "enabled": true
+                },
+                "disks_maxusage": {
+                    "service": "disks_maxusage",
+                    "interval": 60,
+                    "enabled": true
+                },
+                "networkconns_all_est": {
+                    "service": "networkconns_all_est",
+                    "interval": 60,
+                    "enabled": true
                 }
             }
         }

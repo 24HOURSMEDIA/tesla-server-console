@@ -11,6 +11,7 @@ namespace Tesla\WebserverConsole\Provider;
 
 use Silex\Application;
 use Silex\ServiceProviderInterface;
+use Tesla\WebserverConsole\Command\CollectStatsCommand;
 use Tesla\WebserverConsole\Controller\ConsoleConfigController;
 use Tesla\WebserverConsole\Controller\LogController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,6 +20,7 @@ use Tesla\WebserverConsole\Panel\PanelFactory;
 use Tesla\WebserverConsole\Poll\PollItemFactory;
 use Tesla\WebserverConsole\Panel\PanelsetFactory;
 use Tesla\WebserverConsole\Controller\EtcController;
+use Tesla\WebserverConsole\Stats\StatsEntryFactory;
 
 class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
 {
@@ -156,6 +158,20 @@ class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
                     'tesla-server-console',
                     'panelsets'
                 ), $app['tesla_webserverconsole_panel.factory']);
+            }
+        );
+
+        $app['tesla_server_console_collect_stats.command'] = $app->share(
+            function () use ($app) {
+                return new CollectStatsCommand($app['tesla_server_console_stats_entry.factory'], $app['config']->getSetting(
+                    'tesla-server-console',
+                    'stats'
+                ));
+            }
+        );
+        $app['tesla_server_console_stats_entry.factory'] = $app->share(
+            function () use ($app) {
+                return new StatsEntryFactory($app);
             }
         );
     }

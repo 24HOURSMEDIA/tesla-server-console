@@ -3,5 +3,6 @@
     "aws.key": "",
     "aws.secret": "",
     "aws.region": "",
-    "console.server_name": "epg-edge"
+    "console.server_name": "epg-edge",
+    "console.stats.datadir": ""
 }

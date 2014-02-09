@@ -21,15 +21,15 @@ class CpuUsagePollHandler implements PollHandlerInterface
             return $this->stats;
         }
         $output = array();
-        exec('top -b -n 2 |grep ^Cpu', $output);
+        exec('top -i 1 -l 2 |grep ^Cpu', $output);
         $lines = explode(' ', $output[1]);
-        $stats = array('user' => -1, 'sys' => -1, 'nice' => -1, 'idle' => -1, 'wait' => -1);
+        $stats = array('user' => -1, 'system' => -1, 'nice' => -1, 'idle' => -1, 'wait' => -1, 'steal' => -1);
         foreach ($lines as $line) {
             if (strpos($line, 'us')) {
                 $stats['user'] = (float)$line;
             }
-            if (strpos($line, 'sy')) {
-                $stats['sys'] = (float)$line;
+            if (strpos($line, 'system')) {
+                $stats['system'] = (float)$line;
             }
             if (strpos($line, 'ni')) {
                 $stats['nice'] = (float)$line;
@@ -62,8 +62,8 @@ class CpuUsagePollHandler implements PollHandlerInterface
                 return $stats['user'];
             case 'nice':
                 return $stats['nice'];
-            case 'sys':
-                return $stats['sys'];
+            case 'system':
+                return $stats['system'];
             case 'idle':
                 return $stats['idle'];
             case 'wait':
