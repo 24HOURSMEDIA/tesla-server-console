@@ -1,149 +1,24 @@
 {% extends "layout.html" %}
 
 {% block content %}
-    <script>
-        var stats = {
-            loadavg1: {
-                route: '{{ path('tesla_systeminfo_poll_loadavg', {interval: 1}) }}'
-            },
-            loadavg2: {
-                route: '{{ path('tesla_systeminfo_poll_loadavg', {interval: 5}) }}'
-            },
-            loadavg3: {
-                route: '{{ path('tesla_systeminfo_poll_loadavg', {interval: 15}) }}'
-            },
-            cpuuser_user: {
-                route: '{{ path('tesla_systeminfo_poll_cpuusage', {type: "user"}) }}'
-            },
-            cpuuser_nice: {
-                route: '{{ path('tesla_systeminfo_poll_cpuusage', {type: "nice"}) }}'
-            },
-            cpuuser_sys: {
-                route: '{{ path('tesla_systeminfo_poll_cpuusage', {type: "sys"}) }}'
-            },
-            cpuuser_idle: {
-                route: '{{ path('tesla_systeminfo_poll_cpuusage', {type: "idle"}) }}'
-            },
-            cpuuser_wait: {
-                route: '{{ path('tesla_systeminfo_poll_cpuusage', {type: "wait"}) }}'
-            },
-            cpuuser_steal: {
-                route: '{{ path('tesla_systeminfo_poll_cpuusage', {type: "steal"}) }}'
-            },
-            netport_est_all: {
-                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: 'all', state: 'established'}) }}'
-            },
-            netport_wait_all: {
-                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: 'all', state: 'wait'}) }}'
-            },
-            netport_all_all: {
-                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: 'all', state: 'all'}) }}'
-            },
-            netport_est_80: {
-                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '80', state: 'established'}) }}'
-            },
-            netport_wait_80: {
-                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '80', state: 'wait'}) }}'
-            },
-            netport_all_80: {
-                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '80', state: 'all'}) }}'
-            },
-            netport_est_2000: {
-                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '2000', state: 'established'}) }}'
-            },
-            netport_wait_2000: {
-                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '2000', state: 'wait'}) }}'
-            },
-            netport_all_2000: {
-                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '2000', state: 'all'}) }}'
-            },
-            netport_est_9000: {
-                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '9000', state: 'established'}) }}'
-            },
-            netport_wait_9000: {
-                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '9000', state: 'wait'}) }}'
-            },
-            netport_all_9000: {
-                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '9000', state: 'all'}) }}'
-            },
-            netport_est_8090: {
-                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '8090', state: 'established'}) }}'
-            },
-            netport_wait_8090: {
-                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '8090', state: 'wait'}) }}'
-            },
-            netport_all_8090: {
-                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '8090', state: 'all'}) }}'
-            },
-            netport_est_3306: {
-                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '3306', state: 'established'}) }}'
-            },
-            netport_wait_3306: {
-                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '3306', state: 'wait'}) }}'
-            },
-            netport_all_3306: {
-                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '3306', state: 'all'}) }}'
-            },
-            netport_est_11211: {
-                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '11211', state: 'established'}) }}'
-            },
-            netport_wait_11211: {
-                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '11211', state: 'wait'}) }}'
-            },
-            netport_all_11211: {
-                route: '{{ path('tesla_systeminfo_poll_netportconnections', {port: '11211', state: 'all'}) }}'
-            }
-        };
 
 
-        $(document).ready(function () {
-            loadStats();
-            window.setInterval(function () {
-                loadStats();
-            }, 3000);
-        });
-
-        function loadStats() {
-            var $container = $('#stats');
-            for (var monitor in stats) {
-                var settings = stats[monitor];
-                if (!$('#stats #' + monitor).length) {
-                    // create a new indicator
-                    $container.append('<div id="' + monitor + '"><div class="row"><div class="col-sm-3"><strong class="title"></strong></div><div class="col-sm-1"><span class="value_text"></span></div><div class="col-sm-8"><div class="progress progress-striped active"><div class="progress-bar " role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100" style="width:0%"> </div></div></div></div></div>');
-                }
-
-                $.ajax({
-                    dataType: "json",
-                    url: settings.route,
-                    data: null,
-                    $indicator: $('#stats #' + monitor),
-                    success: function (data) {
-                        this.$indicator.find('.title').text(data.title);
-                        this.$indicator.find('.value_text').text(data.value);
-                        var level = ((data.value - data.min) / (data.max - data.min)) * 100;
-                        this.$indicator.find('.progress-bar').css('width', level + '%');
-                        var cls = 'progress-bar-success';
-                        if (data.warning == true) {
-                            cls = 'progress-bar-warning';
-                        }
-                        if (data.critical == true) {
-                            cls = 'progress-bar-danger';
-                        }
-                        this.$indicator.find('.progress-bar').removeClass('progress-bar-success').removeClass('progress-bar-warning').removeClass('progress-bar-danger').addClass(cls);
-                    }
-                });
-
-            }
-        }
-    </script>
+    <div class="row">
 
 
-    <h1>Live Dashboard</h1>
-    <br/>
-
-    <div id="stats">
-
-
+        <div class="col-sm-3">
+            <h1>&nbsp;</h1>
+            <ul class="list-group">
+                {% for key, panelset in panelsets %}
+                    <li class="list-group-item"><a
+                                href="{{ path('live-dashboard',{panelSet:  key }) }}">{{ panelset.title }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+        <div class="col-sm-9">
+            <h1>{{ panelset.title }}</h1>
+            {% include 'panels.html.twig' %}
+        </div>
     </div>
 
 {% endblock %}

@@ -1,5 +1,65 @@
 {
     "tesla-server-console": {
+        "commands": {
+            "appendDiskUsage": {
+                "appendToPanelSets": ["default"]
+            },
+            "autoAppendPortPoll": {
+                "all": {
+                    "title": "All network connections",
+                    "ip": "127.0.0.1",
+                    "port": "all",
+                    "active": true,
+                    "createPanel": true,
+                    "appendToPanelSets": ["netconn", "default"]
+                },
+
+                "port80": {
+                    "title": "Port 80 (www)",
+                    "ip": "127.0.0.1",
+                    "port": 80,
+                    "active": true,
+                    "createPanel": true,
+                    "appendToPanelSets": ["netconn"]
+                },
+                "port3306": {
+                    "title": "Port 3306 (mysql)",
+                    "ip": "127.0.0.1",
+                    "port": 3306,
+                    "active": true,
+                    "createPanel": true,
+                    "appendToPanelSets": ["netconn"]
+                },
+                "port11211": {
+                    "title": "Port 11211 (memcached)",
+                    "ip": "127.0.0.1",
+                    "port": 11211,
+                    "active": true,
+                    "createPanel": true,
+                    "appendToPanelSets": ["netconn"]
+
+                },
+                "port8080": {
+                    "title": "Port 8080 (proxy port)",
+                    "ip": "127.0.0.1",
+                    "port": 8080,
+                    "active": true,
+                    "createPanel": true,
+                    "appendToPanelSets": ["netconn"]
+
+                },
+                "port2000": {
+                    "title": "Port 2000 (server console)",
+                    "ip": "127.0.0.1",
+                    "port": 2000,
+                    "active": true,
+                    "createPanel": true,
+                    "appendToPanelSets": ["netconn"]
+
+                }
+
+            }
+        },
         "poll": {
             "loadavg1": {
                 "title": "load avg. 1 min.",
@@ -7,6 +67,24 @@
                     "name": "tesla_systeminfo_poll_loadavg",
                     "parameters": {
                         "interval": 1
+                    }
+                }
+            },
+            "loadavg5": {
+                "title": "load avg. 5 min.",
+                "route": {
+                    "name": "tesla_systeminfo_poll_loadavg",
+                    "parameters": {
+                        "interval": 5
+                    }
+                }
+            },
+            "loadavg15": {
+                "title": "load avg. 1 min.",
+                "route": {
+                    "name": "tesla_systeminfo_poll_loadavg",
+                    "parameters": {
+                        "interval": 15
                     }
                 }
             },
@@ -47,13 +125,16 @@
                     }
                 }
             },
-            "tesla_systeminfo_poll_netportconnections": {
+
+
+            "disks_maxusage": {
                 "title": "device with max usage",
                 "route": {
                     "name": "tesla_systeminfo_poll_disks_maxusage",
                     "parameters": {}
                 }
             }
+
         },
         "panels": {
             "health-summary": {
@@ -73,12 +154,75 @@
                     },
                     {
                         "type": "poll",
-                        "service": "tesla_systeminfo_poll_netportconnections"
+                        "service": "disks_maxusage"
+                    }
+                ]
+            },
+            "cpu-usage": {
+                "title": "CPU usage",
+                "items": [
+                    {
+                        "type": "poll",
+                        "service": "cpuusage_user"
+                    },
+                    {
+                        "type": "poll",
+                        "service": "cpuusage_idle"
+                    },
+                    {
+                        "type": "poll",
+                        "service": "cpuusage_used"
+                    }
+                ]
+            },
+            "load-average": {
+                "title": "Load average",
+                "items": [
+                    {
+                        "type": "poll",
+                        "service": "loadavg1"
+                    },
+                    {
+                        "type": "poll",
+                        "service": "loadavg5"
+                    },
+                    {
+                        "type": "poll",
+                        "service": "loadavg15"
+                    }
+                ]
+            },
+            "disk": {
+                "title": "Disk",
+                "items": [
+                    {
+                        "type": "poll",
+                        "service": "disks_maxusage"
                     }
                 ]
             }
 
-        }
-    }
+        },
+        "panelsets": {
+            "default": {
+                "title": "Panels",
+                "panels": ["health-summary"]
+            },
+            "cpu_load": {
+                "title": "Cpu / Load average",
+                "panels": ["load-average", "cpu-usage"]
+            },
+            "netconn": {
+                "title": "NetConn",
+                "panels": []
 
+            },
+            "disk": {
+                "title": "Disk",
+                "panels": ["disk"]
+            }
+        }
+
+    }
 }
+

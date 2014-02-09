@@ -1,0 +1,75 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+    <h1>Tesla Server Console Configuration</h1>
+
+    <h3>Poll services</h3>
+    <table class="table table-striped">
+        <tr>
+            <th>service id</th>
+            <th>title</th>
+        </tr>
+        {% for key, value in configs.poll %}
+            <tr>
+                <td width="10">{{ key }}:</td>
+                <td>{{ value.title }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <h3>Panel composition</h3>
+    <table class="table">
+        <tr>
+            <th>panel</th>
+
+            <th>services</th>
+        </tr>
+        {% for key, value in configs.panels %}
+            <tr>
+                <td width="10" style="white-space:nowrap">{{ key }}</td>
+                <td>(Title: {{ value.title }})</td>
+            </tr>
+            {% for item in value.items %}
+                <tr>
+
+                <td></td>
+                <td>
+
+                    {{ item.type }}
+                    {{ item.service }}
+
+                </td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+
+    <h3>Panel sets</h3>
+    <table class="table">
+        <tr>
+            <th>panelset</th>
+
+            <th>panels</th>
+        </tr>
+        {% for key, value in configs.panelsets %}
+            <tr>
+                <td width="10" style="white-space:nowrap">{{ key }}</td>
+                <td></td>
+            </tr>
+            {% for item in value.panels %}
+                <tr>
+
+                <td></td>
+                <td>
+
+                    {{ item }}
+
+
+                </td>
+            {% endfor %}
+            </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}

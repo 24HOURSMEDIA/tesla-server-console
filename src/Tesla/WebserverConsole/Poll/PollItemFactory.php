@@ -34,6 +34,7 @@ class PollItemFactory
      */
     function get($pollServiceId)
     {
+
         $pollDef = $this->pollConfig[$pollServiceId];
         if (!$pollDef) {
             throw new WebserverConsoleException('Poll definition ' . $pollServiceId . ' not found');

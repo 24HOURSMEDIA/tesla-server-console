@@ -109,6 +109,11 @@ class ConfigurationManager
         return $this->config[$section];
     }
 
+    function setSection($section, $cfg)
+    {
+        $this->config[$section] = $cfg;
+    }
+
     function getSetting($section, $key)
     {
         $this->isLoaded or $this->load();

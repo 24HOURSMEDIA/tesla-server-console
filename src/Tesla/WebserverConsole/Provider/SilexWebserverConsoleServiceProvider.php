@@ -11,13 +11,78 @@ namespace Tesla\WebserverConsole\Provider;
 
 use Silex\Application;
 use Silex\ServiceProviderInterface;
+use Tesla\WebserverConsole\Controller\ConsoleConfigController;
 use Tesla\WebserverConsole\Controller\LogController;
 use Symfony\Component\HttpFoundation\Request;
+use Tesla\WebserverConsole\Exception\WebserverConsoleException;
 use Tesla\WebserverConsole\Panel\PanelFactory;
 use Tesla\WebserverConsole\Poll\PollItemFactory;
+use Tesla\WebserverConsole\Panel\PanelsetFactory;
 
 class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
 {
+
+    private function processCommands($app, $commands)
+    {
+        $cfg = $app['config']->getSection('tesla-server-console');
+        foreach ($commands as $command => $commandDef) {
+            foreach ($commandDef as $params) {
+                switch ($command) {
+
+                    case "autoAppendPortPoll":
+                        // create poll routes named like tesla_systeminfo_poll_netportconnections_127.0.0.1_80 etc
+                        $states = array('all', 'established', 'wait', 'listen');
+
+                        if ($params['createPanel']) {
+                            $cfg['panels']['connections_' . $params['ip'] . '_' . $params['port']] = array(
+                                'title' => $params['title'],
+                                'items' => array()
+                            );
+                        }
+                        foreach ($states as $state) {
+                            $serviceId = 'connections_' . $params['ip'] . '_' . $params['port'] . '_' . $state;
+                            $cfg['poll'][$serviceId] = array(
+                                'title' => $params['title'] . ' ' . $state,
+                                'route' => array(
+                                    'name' => 'tesla_systeminfo_poll_netportconnections',
+                                    'parameters' => array(
+                                        'port' => $params['port'],
+                                        'ip' => $params['ip'],
+                                        'state' => $state
+                                    )
+                                )
+                            );
+                            if ($params['createPanel']) {
+                                $cfg['panels']['connections_' . $params['ip'] . '_' . $params['port']]['items'][] = array(
+                                    'type' => 'poll',
+                                    'service' => $serviceId
+                                );
+
+                            }
+                        }
+
+
+                        if ($params['createPanel']) {
+                            foreach ($params['appendToPanelSets'] as $k => $set) {
+
+                                $cfg["panelsets"][$set]["panels"][] = 'connections_' . $params['ip'] . '_' . $params['port'];
+                            }
+                        }
+
+                        break;
+                    case "appendDiskUsage":
+                        break;
+
+                    default:
+                        throw new WebserverConsoleException('Could not process command ' . $command . ' from config');
+
+                }
+            }
+
+        }
+        $app['config']->setSection('tesla-server-console', $cfg);
+    }
+
     /**
      * Registers services on the given app.
      *
@@ -26,8 +91,10 @@ class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
      *
      * @param Application $app An Application instance
      */
-    public function register(Application $app)
-    {
+    public
+    function register(
+        Application $app
+    ) {
         $app['tesla_webserverconsole_log.controller'] = $app->share(
             function () use ($app) {
                 return new LogController($app['twig']);
@@ -53,6 +120,14 @@ class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
                 ), $app['tesla_webserverconsole_pollitem.factory']);
             }
         );
+        $app['tesla_webserverconsole_panelset.factory'] = $app->share(
+            function () use ($app) {
+                return new PanelSetFactory($app['config']->getSetting(
+                    'tesla-server-console',
+                    'panelsets'
+                ), $app['tesla_webserverconsole_panel.factory']);
+            }
+        );
     }
 
     /**
@@ -62,10 +137,30 @@ class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
      * and should be used for "dynamic" configuration (whenever
      * a service must be requested).
      */
-    public function boot(Application $app)
-    {
+    public
+    function boot(
+        Application $app
+    ) {
+
+        $this->processCommands(
+            $app,
+            $app['config']->getSetting(
+                'tesla-server-console',
+                'commands'
+            )
+        );
+
         $app->get(
-            '/',
+            'console-config',
+            function () use ($app) {
+                $controller = new ConsoleConfigController($app['twig']);
+
+                return $controller->listAction($app['config']->getSection('tesla-server-console'));
+            }
+        )->bind('console-config');
+
+        $app->get(
+        '/',
             function () use ($app) {
 
                 $panelFactory = $app['tesla_webserverconsole_panel.factory'];
@@ -87,11 +182,18 @@ class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
         )->bind('homepage');
 
         $app->get(
-            '/tesla-server-console/live-dashboard',
-            function () use ($app) {
+            '/tesla-server-console/live-dashboard/{panelSet}',
+            function ($panelSet) use ($app) {
+                try {
+                    $panels = $app['tesla_webserverconsole_panelset.factory']->get($panelSet);
+                } catch (\Exception $e) {
+                    $panels = array();
+                }
+                $panelSets = $app['config']->getSetting('tesla-server-console', 'panelsets');
+
                 return $app['twig']->render(
                     'live-dashboard.html.twig',
-                    array()
+                    array('panels' => $panels, 'panelsets' => $panelSets, 'panelset' => $panelSets[$panelSet])
                 );
             }
         )->bind('live-dashboard');
