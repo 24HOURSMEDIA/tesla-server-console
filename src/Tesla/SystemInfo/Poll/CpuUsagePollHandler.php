@@ -21,7 +21,7 @@ class CpuUsagePollHandler implements PollHandlerInterface
             return $this->stats;
         }
         $output = array();
-        exec('top -i 1 -l 2 |grep ^Cpu', $output);
+        exec('top -b -n 2 |grep ^Cpu', $output);
         $lines = explode(' ', $output[1]);
         $stats = array('user' => -1, 'system' => -1, 'nice' => -1, 'idle' => -1, 'wait' => -1, 'steal' => -1);
         foreach ($lines as $line) {

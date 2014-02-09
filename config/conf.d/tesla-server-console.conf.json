@@ -246,7 +246,12 @@
                     {
                         "type": "poll",
                         "service": "disks_maxusage"
-                    },
+                    }
+                ]
+            },
+            "dirusage": {
+                "title": "Directories",
+                "items": [
                     {
                         "type": "poll",
                         "service": "disks_dirsize_var_log"
@@ -275,7 +280,7 @@
             },
             "disk": {
                 "title": "Disc",
-                "panels": ["diskusage"]
+                "panels": ["diskusage", "dirusage"]
             }
         },
         "etc": {
