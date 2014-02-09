@@ -178,9 +178,9 @@ class SilexSystemInfoServiceProvider implements ServiceProviderInterface
         )->bind('tesla_systeminfo_diskdirsize')->assert('dir', '[\w\-\._/]+');
 
         $app->get(
-            $routePrefix . '/php/apc-stat/{key}',
-            function ($key) use ($app, $serializer, $fastCachetime, $slowCachetime, $defaultCachetime) {
-                $result = $app['tesla_systeminfo_php_apc_stat.poll_handler']->getResult($key);
+            $routePrefix . '/php/apc-stat/cache/{type}/stat/{key}',
+            function ($key, $type) use ($app, $serializer, $fastCachetime, $slowCachetime, $defaultCachetime) {
+                $result = $app['tesla_systeminfo_php_apc_stat.poll_handler']->getResult($type, $key);
                 $json = $serializer->serialize($result, 'json');
                 $response = Response::create($json)->setPrivate()->setMaxAge($fastCachetime);
                 $response->headers->set('content-type', 'application/json');

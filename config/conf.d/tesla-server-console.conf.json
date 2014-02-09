@@ -174,12 +174,63 @@
                     }
                 }
             },
-            "php_apc_stat_miss_ratio": {
+            "php_apc_stat_filecache_miss_ratio": {
                 "title": "apc file cache miss ratio",
                 "route": {
                     "name": "tesla_systeminfo_php_apc_stat",
                     "parameters": {
+                        "type": "filecache",
                         "key": "miss_ratio"
+                    }
+                }
+            },
+            "php_apc_stat_user_miss_ratio": {
+                "title": "apc file cache miss ratio",
+                "route": {
+                    "name": "tesla_systeminfo_php_apc_stat",
+                    "parameters": {
+                        "type": "user",
+                        "key": "miss_ratio"
+                    }
+                }
+            },
+            "php_apc_stat_filecache_mem_size": {
+                "title": "apc file mem size",
+                "route": {
+                    "name": "tesla_systeminfo_php_apc_stat",
+                    "parameters": {
+                        "type": "filecache",
+                        "key": "mem_size"
+                    }
+                }
+            },
+            "php_apc_stat_user_mem_size": {
+                "title": "apc user mem size",
+                "route": {
+                    "name": "tesla_systeminfo_php_apc_stat",
+                    "parameters": {
+                        "type": "user",
+                        "key": "mem_size"
+                    }
+                }
+            },
+            "php_apc_stat_filecache_num_entries": {
+                "title": "apc file cache entries",
+                "route": {
+                    "name": "tesla_systeminfo_php_apc_stat",
+                    "parameters": {
+                        "type": "filecache",
+                        "key": "num_entries"
+                    }
+                }
+            },
+            "php_apc_stat_user_num_entries": {
+                "title": "apc user cache entries",
+                "route": {
+                    "name": "tesla_systeminfo_php_apc_stat",
+                    "parameters": {
+                        "type": "user",
+                        "key": "num_entries"
                     }
                 }
             }
@@ -276,7 +327,27 @@
                 "items": [
                     {
                         "type": "poll",
-                        "service": "php_apc_stat_miss_ratio"
+                        "service": "php_apc_stat_filecache_miss_ratio"
+                    },
+                    {
+                        "type": "poll",
+                        "service": "php_apc_stat_filecache_num_entries"
+                    },
+                    {
+                        "type": "poll",
+                        "service": "php_apc_stat_filecache_mem_size"
+                    },
+                    {
+                        "type": "poll",
+                        "service": "php_apc_stat_user_miss_ratio"
+                    },
+                    {
+                        "type": "poll",
+                        "service": "php_apc_stat_user_num_entries"
+                    },
+                    {
+                        "type": "poll",
+                        "service": "php_apc_stat_user_mem_size"
                     }
                 ]
             }

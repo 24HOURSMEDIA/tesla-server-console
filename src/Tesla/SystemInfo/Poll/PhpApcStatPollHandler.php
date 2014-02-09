@@ -14,34 +14,44 @@ class PhpApcStatPollHandler implements PollHandlerInterface
 {
 
     private $fileCacheStats;
+    private $userCacheStats;
 
     /**
      * Gets the value of the monitor
      * @return mixed
      */
-    function getValue($key = null)
+    function getValue($type = null, $key = null)
     {
         if (!$this->fileCacheStats) {
             $this->fileCacheStats = apc_cache_info('file_hits', true);
         }
+        if (!$this->userCacheStats) {
+            $this->userCacheStats = apc_cache_info('user', true);
+        }
+        $source = $type == 'user' ? $this->userCacheStats : $this->fileCacheStats;;
 
         switch ($key) {
             case 'miss_ratio':
-                return 100 * $this->fileCacheStats['num_misses'] / $this->fileCacheStats['num_hits'];
+                return 100 * $source['num_misses'] / $source['num_hits'];
+            case "mem_size":
+                return sprintf('%0.2f', $source['mem_size'] / 1024 / 1024);
         }
 
-        return $this->fileCacheStats[$key];
+        return $source[$key];
     }
 
     /**
      * Get a more comprehensive monitor result
      * @return PollResult
      */
-    function getResult($key = null)
+    function getResult($type = null, $key = null)
     {
-        $result = PollResult::create($key, sprintf('%0.2f', $this->getValue($key)));
-        if ($key = 'miss_ratio') {
+        $result = PollResult::create($key, sprintf('%0.2f', $this->getValue($type, $key)));
+        if ($key == 'miss_ratio') {
             $result->setMax(100)->setUnit('%');
+        }
+        if ($key == 'mem_size') {
+            $result->setMax(256)->setUnit('Mb');
         }
 
         return $result;
