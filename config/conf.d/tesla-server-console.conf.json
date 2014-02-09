@@ -173,6 +173,15 @@
                         "dir": "/var/cache/nginx"
                     }
                 }
+            },
+            "php_apc_stat_miss_ratio": {
+                "title": "apc file cache miss ratio",
+                "route": {
+                    "name": "tesla_systeminfo_php_apc_stat",
+                    "parameters": {
+                        "key": "miss_ratio"
+                    }
+                }
             }
         },
         "panels": {
@@ -261,7 +270,17 @@
                         "service": "disks_dirsize_var_cache_nginx"
                     }
                 ]
+            },
+            "php-apc": {
+                "title": "PHP APC",
+                "items": [
+                    {
+                        "type": "poll",
+                        "service": "php_apc_stat_miss_ratio"
+                    }
+                ]
             }
+
 
         },
         "panelsets": {
@@ -281,6 +300,10 @@
             "disk": {
                 "title": "Disc",
                 "panels": ["diskusage", "dirusage"]
+            },
+            "php": {
+                "title": "PHP",
+                "panels": ["php-apc"]
             }
         },
         "etc": {

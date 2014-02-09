@@ -19,6 +19,7 @@ use Tesla\SystemInfo\Poll\DiskHighestUsagePollHandler;
 use Tesla\SystemInfo\Poll\DiskUsagePollHandler;
 use Tesla\SystemInfo\Poll\LoadAvgPollHandler;
 use Tesla\SystemInfo\Poll\NetPortConnectionsPollHandler;
+use Tesla\SystemInfo\Poll\PhpApcStatPollHandler;
 use Tesla\SystemInfo\Poll\PollResult;
 
 class SilexSystemInfoServiceProvider implements ServiceProviderInterface
@@ -70,6 +71,13 @@ class SilexSystemInfoServiceProvider implements ServiceProviderInterface
                 return new DiskDirSizePollHandler();
             }
         );
+
+        $app['tesla_systeminfo_php_apc_stat.poll_handler'] = $app->share(
+            function () use ($app) {
+                return new PhpApcStatPollHandler();
+            }
+        );
+
         // informational
         $app['tesla_systeminfo_info.storagedeviceinfo_provider'] = $app->share(
             function () use ($app) {
@@ -168,6 +176,19 @@ class SilexSystemInfoServiceProvider implements ServiceProviderInterface
 
             }
         )->bind('tesla_systeminfo_diskdirsize')->assert('dir', '[\w\-\._/]+');
+
+        $app->get(
+            $routePrefix . '/php/apc-stat/{key}',
+            function ($key) use ($app, $serializer, $fastCachetime, $slowCachetime, $defaultCachetime) {
+                $result = $app['tesla_systeminfo_php_apc_stat.poll_handler']->getResult($key);
+                $json = $serializer->serialize($result, 'json');
+                $response = Response::create($json)->setPrivate()->setMaxAge($fastCachetime);
+                $response->headers->set('content-type', 'application/json');
+
+                return $response;
+
+            }
+        )->bind('tesla_systeminfo_php_apc_stat');
 
 
         $infoRoutePrefix = '/tesla/system-info/info';

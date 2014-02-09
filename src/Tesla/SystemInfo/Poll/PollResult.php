@@ -24,6 +24,11 @@ class PollResult
         return 'm' . crc32($this->getTitle());
     }
 
+    /**
+     * @param $title
+     * @param $value
+     * @return mixed
+     */
     static function create($title, $value)
     {
         $monitor = new self();
@@ -31,6 +36,10 @@ class PollResult
         return $monitor->setTitle($title)->setValue($value);
     }
 
+    /**
+     * @param bool $inverse
+     * @return $this
+     */
     function setInverse($inverse = true)
     {
         $this->isInverse = $inverse;
@@ -39,8 +48,8 @@ class PollResult
     }
 
     /**
-     * Set the title
-     * @param string $title
+     * @param $title
+     * @return $this
      */
     public function setTitle($title)
     {
@@ -59,8 +68,8 @@ class PollResult
     }
 
     /**
-     * Set the value
-     * @param mixed $value
+     * @param $value
+     * @return $this
      */
     public function setValue($value)
     {
@@ -79,8 +88,8 @@ class PollResult
     }
 
     /**
-     * Set the max
-     * @param mixed $max
+     * @param $max
+     * @return $this
      */
     public function setMax($max)
     {
@@ -99,8 +108,8 @@ class PollResult
     }
 
     /**
-     * Set the min
-     * @param mixed $min
+     * @param $min
+     * @return $this
      */
     public function setMin($min)
     {
@@ -141,8 +150,8 @@ class PollResult
     }
 
     /**
-     * Set the unit
-     * @param string $unit
+     * @param $unit
+     * @return $this
      */
     public function setUnit($unit)
     {
