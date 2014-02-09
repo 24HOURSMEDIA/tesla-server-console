@@ -71,6 +71,30 @@ class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
 
                         break;
                     case "appendDiskUsage":
+                        $infos = $app['tesla_systeminfo_info.storagedeviceinfo_provider']->getInfo();
+                        foreach ($infos->getItems() as $info) {
+                            $serviceId = 'disk_' . $info['filesystem'];
+
+
+                            if ($params['appendToPanels']) {
+                                foreach ($params['appendToPanels'] as $panelId) {
+                                    $cfg['poll'][$serviceId] = array(
+
+                                        'title' => $info['filesystem'],
+                                        'route' => array(
+                                            'name' => 'tesla_systeminfo_diskusage',
+                                            'parameters' => array(
+                                                'device' => $info['filesystem']
+                                            )
+                                        )
+                                    );
+                                    $cfg['panels'][$panelId]['items'][] = array(
+                                        'type' => 'poll',
+                                        'service' => $serviceId
+                                    );
+                                }
+                            }
+                        }
                         break;
 
                     default:
@@ -160,7 +184,7 @@ class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
         )->bind('console-config');
 
         $app->get(
-        '/',
+            '/',
             function () use ($app) {
 
                 $panelFactory = $app['tesla_webserverconsole_panel.factory'];
@@ -184,11 +208,12 @@ class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
         $app->get(
             '/tesla-server-console/live-dashboard/{panelSet}',
             function ($panelSet) use ($app) {
-                try {
-                    $panels = $app['tesla_webserverconsole_panelset.factory']->get($panelSet);
-                } catch (\Exception $e) {
-                    $panels = array();
-                }
+                //try {
+                $panels = $app['tesla_webserverconsole_panelset.factory']->get($panelSet);
+                //} catch (\Exception $e) {
+                //    $panels = array();
+                //}
+
                 $panelSets = $app['config']->getSetting('tesla-server-console', 'panelsets');
 
                 return $app['twig']->render(

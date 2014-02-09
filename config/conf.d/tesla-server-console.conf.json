@@ -1,9 +1,12 @@
 {
     "tesla-server-console": {
         "commands": {
-            "appendDiskUsage": {
-                "appendToPanelSets": ["default"]
-            },
+            "appendDiskUsage": [
+                {
+                    "createPanel": false,
+                    "appendToPanels": ["diskusage"]
+                }
+            ],
             "autoAppendPortPoll": {
                 "all": {
                     "title": "All network connections",
@@ -135,6 +138,7 @@
                 }
             }
 
+
         },
         "panels": {
             "health-summary": {
@@ -192,8 +196,8 @@
                     }
                 ]
             },
-            "disk": {
-                "title": "Disk",
+            "diskusage": {
+                "title": "Discs",
                 "items": [
                     {
                         "type": "poll",
@@ -218,8 +222,8 @@
 
             },
             "disk": {
-                "title": "Disk",
-                "panels": ["disk"]
+                "title": "Disc",
+                "panels": ["diskusage"]
             }
         }
 

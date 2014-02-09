@@ -15,6 +15,7 @@ use Tesla\SystemInfo\Info\StorageDeviceInfoProvider;
 use Tesla\SystemInfo\Poll\CpuCoresPollHandler;
 use Tesla\SystemInfo\Poll\CpuUsagePollHandler;
 use Tesla\SystemInfo\Poll\DiskHighestUsagePollHandler;
+use Tesla\SystemInfo\Poll\DiskUsagePollHandler;
 use Tesla\SystemInfo\Poll\LoadAvgPollHandler;
 use Tesla\SystemInfo\Poll\NetPortConnectionsPollHandler;
 use Tesla\SystemInfo\Poll\PollResult;
@@ -51,6 +52,11 @@ class SilexSystemInfoServiceProvider implements ServiceProviderInterface
                 return new NetPortConnectionsPollHandler();
             }
         );
+        $app['tesla_systeminfo_diskusage.poll_handler'] = $app->share(
+            function () use ($app) {
+                return new DiskUsagePollHandler($app['tesla_systeminfo_info.storagedeviceinfo_provider']);
+            }
+        );
         $app['tesla_systeminfo_diskhighestusage.poll_handler'] = $app->share(
             function () use ($app) {
                 return new DiskHighestUsagePollHandler($app['tesla_systeminfo_info.storagedeviceinfo_provider']);
@@ -63,6 +69,7 @@ class SilexSystemInfoServiceProvider implements ServiceProviderInterface
                 return new StorageDeviceInfoProvider();
             }
         );
+
 
     }
 
@@ -117,7 +124,7 @@ class SilexSystemInfoServiceProvider implements ServiceProviderInterface
             }
         )->bind('tesla_systeminfo_poll_netportconnections');
         $app->get(
-            $routePrefix . '/disks',
+            $routePrefix . '/disks/max',
             function () use ($app, $serializer, $fastCachetime, $slowCachetime, $defaultCachetime) {
                 $result = $app['tesla_systeminfo_diskhighestusage.poll_handler']->getResult();
                 $json = $serializer->serialize($result, 'json');
@@ -129,10 +136,22 @@ class SilexSystemInfoServiceProvider implements ServiceProviderInterface
             }
         )->bind('tesla_systeminfo_poll_disks_maxusage');
 
+        $app->get(
+            $routePrefix . '/disks/usage/{device}',
+            function ($device) use ($app, $serializer, $fastCachetime, $slowCachetime, $defaultCachetime) {
+                $result = $app['tesla_systeminfo_diskusage.poll_handler']->getResult($device);
+                $json = $serializer->serialize($result, 'json');
+                $response = Response::create($json)->setPrivate()->setMaxAge($slowCachetime);
+                $response->headers->set('content-type', 'application/json');
+
+                return $response;
+
+            }
+        )->bind('tesla_systeminfo_diskusage')->assert('device', '[\w\-\._/]+');
 
         $infoRoutePrefix = '/tesla/system-info/info';
         $app->get(
-            $infoRoutePrefix . '/disks/{infoType}',
+            $infoRoutePrefix . '/disks/info/{infoType}',
             function ($infoType) use ($app, $serializer, $fastCachetime, $slowCachetime, $defaultCachetime) {
                 $result = $app['tesla_systeminfo_info.storagedeviceinfo_provider']->getInfo($infoType);
                 $json = $serializer->serialize($result, 'json');
