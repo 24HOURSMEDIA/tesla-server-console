@@ -7,13 +7,38 @@
     <div class="row">
 
 
-        <div class="col-sm-3">
+        <div class="col-sm-4">
             <h1>&nbsp;</h1>
             <ul class="list-group">
+
+
+                <a class="list-group-item active">
+                    <h4 class="list-group-item-heading">Configuration dumps</h4>
+                </a>
+
+
                 <li class="list-group-item"><a href="{{ path('tesla_webserverconsole_etc', {ulimit:1}) }}">Ulimit</a>
                 </li>
                 <li class="list-group-item"><a href="{{ path('tesla_webserverconsole_etc', {sysctl:1}) }}">SysCtl</a>
                 </li>
+                {% if (filesets is defined) %}
+                    {% for key,fileset in filesets %}
+                        <li class="list-group-item"><a
+                                    href="{{ path('tesla_webserverconsole_etc', {"fileset":key}) }}">{{ fileset.title }}</a>
+                        </li>
+                    {% endfor %}
+                {% endif %}
+
+            </ul>
+
+            <ul class="list-group">
+                {% if files is defined %}
+
+                    {% for file in files %}
+                        <li class="list-group-item"><a href="{{ app.request.uri }}#{{ file.id }}">{{ file.file }}</a>
+                        </li>
+                    {% endfor %}
+                {% endif %}
             </ul>
         </div>
         <div class="col-sm-8">
@@ -45,6 +70,23 @@
                     <small>{% for l in sysctl %}{{ l }}<br/>{% endfor %}</small></pre>{% endspaceless %}
 
             </div>
+        {% endif %}
+
+        {% if files is defined %}
+            <div class="col-sm-8">
+                {% for file in files %}
+
+
+                    <h3><a name="{{ file.id }}"></a>{{ file.file }}</h3>
+                    {% spaceless %}
+                        <pre style="max-height:400px;overflow:auto"><small>{{ file.data }}</small></pre>
+                    {% endspaceless %}
+
+
+
+                {% endfor %}
+            </div>
+
         {% endif %}
     </div>
 

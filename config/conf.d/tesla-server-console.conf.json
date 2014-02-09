@@ -156,8 +156,6 @@
                     }
                 }
             }
-
-
         },
         "panels": {
             "health-summary": {
@@ -254,12 +252,26 @@
             }
         },
         "etc": {
-            "files": [
-                {
-                    "dirs": "/var/log/",
+            "files": {
+                "nginx": {
+                    "title": "Nginx cfg",
+                    "enabled": true,
+                    "dirs": ["/etc/nginx"],
+                    "name": "*"
+                },
+                "php": {
+                    "title": "PHP cfg",
+                    "enabled": true,
+                    "dirs": ["/etc/php*"],
+                    "name": "*"
+                },
+                "apache": {
+                    "title": "Apache",
+                    "enabled": true,
+                    "dirs": ["/etc/apache*"],
                     "name": "*"
                 }
-            ]
+            }
         }
 
     }

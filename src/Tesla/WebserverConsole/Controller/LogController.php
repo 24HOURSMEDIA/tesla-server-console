@@ -49,6 +49,7 @@ class LogController
             }
         }
 
+
         $selectedFile = null;
         $lines = array();
         if (isset($files[$fileId])) {
