@@ -28,7 +28,7 @@ class CpuUsagePollHandler implements PollHandlerInterface
             if (strpos($line, 'us')) {
                 $stats['user'] = (float)$line;
             }
-            if (strpos($line, 'system')) {
+            if (strpos($line, 'sy')) {
                 $stats['system'] = (float)$line;
             }
             if (strpos($line, 'ni')) {

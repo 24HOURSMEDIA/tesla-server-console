@@ -50,7 +50,7 @@ class PollItemFactory
             ->setTitle($pollDef['title'])
             ->setPollUrl($pollUrl)
             ->setDisplay('progress')
-            ->setRefreshInterval(2000);
+            ->setRefreshInterval(5000);
 
         return $pollItem;
     }
