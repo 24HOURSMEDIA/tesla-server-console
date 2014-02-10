@@ -51,6 +51,15 @@
                     "appendToPanelSets": ["netconn"]
 
                 },
+                "port8090": {
+                    "title": "Port 8090 (proxy port)",
+                    "ip": "127.0.0.1",
+                    "port": 8090,
+                    "active": true,
+                    "createPanel": true,
+                    "appendToPanelSets": ["netconn"]
+
+                },
                 "port2000": {
                     "title": "Port 2000 (server console)",
                     "ip": "127.0.0.1",
