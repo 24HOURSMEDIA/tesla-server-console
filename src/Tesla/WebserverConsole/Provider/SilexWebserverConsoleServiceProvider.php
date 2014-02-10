@@ -11,6 +11,7 @@ namespace Tesla\WebserverConsole\Provider;
 
 use Silex\Application;
 use Silex\ServiceProviderInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Tesla\WebserverConsole\Command\CollectStatsCommand;
 use Tesla\WebserverConsole\Controller\ConsoleConfigController;
 use Tesla\WebserverConsole\Controller\LogController;
@@ -21,6 +22,8 @@ use Tesla\WebserverConsole\Poll\PollItemFactory;
 use Tesla\WebserverConsole\Panel\PanelsetFactory;
 use Tesla\WebserverConsole\Controller\EtcController;
 use Tesla\WebserverConsole\Stats\StatsEntryFactory;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
 {
@@ -297,6 +300,31 @@ class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
                 return $app['tesla_webserverconsole_etc.controller']->indexAction($request);
             }
         )->bind('tesla_webserverconsole_etc');
+
+        // processes multiple posted json requests
+        $app->post(
+            '/tesla-server-console/ajax_multicall',
+            function (Request $request) use ($app) {
+                $items = json_decode($request->getContent());
+                $results = new \stdClass();
+                $results->success = array();
+                $results->failed = array();
+                foreach ($items as $item) {
+                    $uri = str_replace('/index.php', '', $item->uri);
+                    $uri = str_replace('/index_dev.php', '', $uri);
+                    $subRequest = Request::create($uri);
+                    $response = $app->handle(Request::create($uri), HttpKernelInterface::SUB_REQUEST, false);
+                    $data = json_decode($response->getContent());
+                    if ($data) {
+                        $results->success[$item->id] = $data;
+                    } else {
+                        $results->failed[$item->id] = $data;
+                    }
+                }
+
+                return JsonResponse::create($results);
+            }
+        )->bind('tesla_webserverconsole_ajax_multicall');
 
 
     }

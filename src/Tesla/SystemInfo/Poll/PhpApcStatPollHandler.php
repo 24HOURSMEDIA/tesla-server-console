@@ -32,7 +32,7 @@ class PhpApcStatPollHandler implements PollHandlerInterface
 
         switch ($key) {
             case 'miss_ratio':
-                return 100 * $source['num_misses'] / $source['num_hits'];
+                return ($source['num_hits'] > 0) ? 100 * $source['num_misses'] / $source['num_hits'] : -1;
             case "mem_size":
                 return sprintf('%0.2f', $source['mem_size'] / 1024 / 1024);
         }
