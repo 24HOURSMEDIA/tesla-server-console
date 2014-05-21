@@ -200,15 +200,6 @@ class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
         );
 
         $app->get(
-            'console-config',
-            function () use ($app) {
-                $controller = new ConsoleConfigController($app['twig']);
-
-                return $controller->listAction($app['config']->getSection('tesla-server-console'));
-            }
-        )->bind('console-config');
-
-        $app->get(
             '/',
             function () use ($app) {
 
@@ -229,6 +220,17 @@ class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
                 );
             }
         )->bind('homepage');
+
+        $app->get(
+            'console-config',
+            function () use ($app) {
+                $controller = new ConsoleConfigController($app['twig']);
+
+                return $controller->listAction($app['config']->getSection('tesla-server-console'));
+            }
+        )->bind('console-config');
+
+
 
         $app->get(
             '/tesla-server-console/live-dashboard/{panelSet}',
