@@ -1,6 +1,6 @@
 {
-    "name": "fabpot/silex-skeleton",
-    "description": "A pre-configured skeleton for the Silex microframework",
+    "name": "tesla/server-console",
+    "description": "gui/console to monitor server status and configuration",
     "license": "MIT",
     "type": "project",
     "require": {
