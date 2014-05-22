@@ -62,7 +62,7 @@ class TeslaAwsCloudIntegrationExtension extends AbstractExtension {
         $extensionParams = array(
             'submenus' => array(
                 array(
-                    'title' => 'Cloud Stack:',
+                    'title' => 'Switch server:',
                     'items' => $menuItems
 
                 )
