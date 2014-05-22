@@ -12,6 +12,17 @@ use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Tesla\AwsConsoleExtensions\TeslaAwsCloudIntegration\TeslaAwsCloudIntegrationExtension;
 
+class _stringClosure {
+    private $func;
+    function __construct($func) {
+        $this->func = $func;
+    }
+    function __toString() {
+        $f = $this->func;
+       return $f();
+    }
+}
+
 class TeslaAwsCloudIntegrationExtensionProvider implements ServiceProviderInterface
 {
 
@@ -31,13 +42,23 @@ class TeslaAwsCloudIntegrationExtensionProvider implements ServiceProviderInterf
 
     public function boot(Application $app)
     {
-        // override the name parameter in the config
-        $ext = $app['tesla_server_console.extension.tesla_awscloud_integration'];
-        $self = $ext->getSelf();
 
-        if ($self) {
-            $app['config']->setParameter('console.server_name', strtoupper($self['instance_id']));
-        }
+
+
+        $tfunc = new _stringClosure(function() use ($app) {
+            // override the name parameter in the config
+
+            $ext = $app['tesla_server_console.extension.tesla_awscloud_integration'];
+            $self = $ext->getSelf();
+            return $self['instance_id'];
+        });
+
+
+
+
+            $app['config']->setParameter('console.server_name', $tfunc);//strtoupper($self['instance_id']));
+
+
 
     }
 } 

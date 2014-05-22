@@ -293,9 +293,14 @@ class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
             '/tesla-server-console/memcache/memcache-stat',
             function () use ($app) {
                 $controller = $app['tesla_webserverconsole_mock.controller'];
+                if (function_exists('memcache_connect')) {
+
                 ob_start();
                 require(__DIR__ . '/../Ext/memcache_stat.inc.php');
                 $html = ob_get_clean();
+                } else {
+                    $html = '<h2>memcache not supported on this server</h2>';
+                }
 
                 return $app['twig']->render('content.html.twig', $controller->extendViewParameters(array('html' => $html)));
             }
