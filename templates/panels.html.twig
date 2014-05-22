@@ -29,43 +29,29 @@
                 }
             ,
 
-                loadPollItems: function () {
-                    var data = new Array();
+                loadPollItem: function (uid) {
 
-                    for (var id in this.pollItems) {
-                        var item = this.pollItems[id];
-                        data.push({id: id, uri: item.pollUrl});
-                    }
-
+                    var item = this.pollItems[uid];
 
                     $.ajax({
-                        type: "POST",
                         dataType: "json",
-                        async: true,
-                        url: "{{ path('tesla_webserverconsole_ajax_multicall') }}",
-                        data: JSON.stringify(data),
-                        dataType: "json",
-                        contentType: "application/json; charset=utf-8",
+                        url: item.pollUrl,
+                        data: null,
                         $progressbar: $('#' + item.uid + '_progressbar'),
                         $value: $('#' + item.uid + '_value'),
 
                         success: function (data) {
-                            for (var id in data.success) {
-                                var poll = data.success[id];
-                                var $progressbar = $('#' + id + '_progressbar');
-                                var $value = $('#' + id + '_value');
-                                var level = ((poll.value - poll.min) / (poll.max - poll.min)) * 100;
-                                $value.text(poll.value + " " + poll.unit);
-                                $progressbar.css('width', level + '%');
-                                var cls = 'progress-bar-success';
-                                if (poll.warning == true) {
-                                    cls = 'progress-bar-warning';
-                                }
-                                if (poll.critical == true) {
-                                    cls = 'progress-bar-danger';
-                                }
-                                $progressbar.removeClass('progress-bar-success').removeClass('progress-bar-warning').removeClass('progress-bar-danger').addClass(cls);
+                            var level = ((data.value - data.min) / (data.max - data.min)) * 100;
+                            this.$value.text(data.value + " " + data.unit);
+                            this.$progressbar.css('width', level + '%');
+                            var cls = 'progress-bar-success';
+                            if (data.warning == true) {
+                                cls = 'progress-bar-warning';
                             }
+                            if (data.critical == true) {
+                                cls = 'progress-bar-danger';
+                            }
+                            this.$progressbar.removeClass('progress-bar-success').removeClass('progress-bar-warning').removeClass('progress-bar-danger').addClass(cls);
 
                         }
                     });
@@ -76,29 +62,27 @@
 
                 start: function () {
                     var self = this;
-                    this.loadPollItems();
-                    window.setInterval(function (){{{ panel.uid }}.loadPollItems()
+                    for (var uid in this.pollItems) {
+                        item = this.pollItems[uid];
+                        this.loadPollItem(uid);
+
+                    }
+                    {% for item in panel.items %}
+                    window.setInterval(function () {
+                        self.loadPollItem("{{ item.uid }}")
+                    }, {{ item.refreshInterval }});
+                    {% endfor %}
                 }
-            ,
-                10000
-            )
-                ;
-
-
             }
             ;
 
             $(document).ready(function () {
                 {{ panel.uid }}.
                 start();
-
             });
-
-            }
-            ;
-
-
         </script>
+
+
 
         <div class="panel panel-info">
             <div class="panel-heading">
