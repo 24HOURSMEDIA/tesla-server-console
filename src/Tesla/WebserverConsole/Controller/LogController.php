@@ -13,7 +13,7 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Finder\Finder;
 
-class LogController
+class LogController extends AbstractController
 {
 
 
@@ -68,12 +68,14 @@ class LogController
 
         return $this->twig->render(
             'TeslaWebserverConsole/Log/index.html.twig',
+            $this->extendViewParameters(
             array(
                 'files' => $files,
                 'selected_file' => $selectedFile,
                 'count' => $count,
                 'lines' => $lines,
                 'sort' => $sort
+            )
             )
         );
     }

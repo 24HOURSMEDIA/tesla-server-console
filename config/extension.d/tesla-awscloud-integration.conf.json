@@ -1,0 +1,7 @@
+{
+    "extensions": {
+        "tesla_awscloud_integration": {
+            "enabled": true
+        }
+    }
+}

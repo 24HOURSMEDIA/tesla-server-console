@@ -14,7 +14,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 
-class EtcController
+class EtcController extends AbstractController
 {
     private $twig;
 
@@ -69,6 +69,6 @@ class EtcController
             $vars['sysctl'] = $sysctl;
         }
 
-        return $this->twig->render('TeslaWebserverConsole/Etc/index.html.twig', $vars);
+        return $this->twig->render('TeslaWebserverConsole/Etc/index.html.twig', $this->extendViewParameters($vars));
     }
 } 

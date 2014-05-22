@@ -127,12 +127,16 @@ class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
     ) {
         $app['tesla_webserverconsole_log.controller'] = $app->share(
             function () use ($app) {
-                return new LogController($app['twig']);
+                $controller = new LogController($app['twig']);
+                $controller->setContainer($app)->loadConfiguration($app['config']);
+                return $controller;
             }
         );
         $app['tesla_webserverconsole_etc.controller'] = $app->share(
             function () use ($app) {
-                return new EtcController($app['twig'], $app['config']->getSetting('tesla-server-console', 'etc'));
+                $controller = new EtcController($app['twig'], $app['config']->getSetting('tesla-server-console', 'etc'));
+                $controller->setContainer($app)->loadConfiguration($app['config']);
+                return $controller;
             }
         );
 
@@ -225,6 +229,7 @@ class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
             'console-config',
             function () use ($app) {
                 $controller = new ConsoleConfigController($app['twig']);
+                $controller->setContainer($app)->loadConfiguration($app['config']);
 
                 return $controller->listAction($app['config']->getSection('tesla-server-console'));
             }

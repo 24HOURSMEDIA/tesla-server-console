@@ -9,7 +9,7 @@
 namespace Tesla\WebserverConsole\Controller;
 
 
-class ConsoleConfigController
+class ConsoleConfigController extends AbstractController
 {
 
     private $twig;
@@ -22,7 +22,7 @@ class ConsoleConfigController
     function listAction($configs)
     {
 
-        return $this->twig->render('TeslaWebserverConsole/ConsoleConfig/list.html.twig', array('configs' => $configs));
+        return $this->twig->render('TeslaWebserverConsole/ConsoleConfig/list.html.twig', $this->extendViewParameters(array('configs' => $configs)));
 
     }
 } 
