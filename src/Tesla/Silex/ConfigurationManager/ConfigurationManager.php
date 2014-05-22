@@ -98,6 +98,13 @@ class ConfigurationManager
         return $this->parameters[$key];
     }
 
+    function setParameter($key, $value)
+    {
+        $this->isLoaded or $this->load();
+        $this->parameters[$key] = $value;
+        return $this;
+    }
+
 
     function getSection($section)
     {
@@ -123,6 +130,12 @@ class ConfigurationManager
         }
 
         return $section[$key];
+    }
+
+    function merge($parms) {
+        $this->isLoaded or $this->load();
+        $this->config = array_merge_recursive($this->config, $parms);
+        return $this;
     }
 
 

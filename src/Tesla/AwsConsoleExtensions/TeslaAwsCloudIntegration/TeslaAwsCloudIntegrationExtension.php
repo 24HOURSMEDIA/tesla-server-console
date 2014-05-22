@@ -23,8 +23,14 @@ class TeslaAwsCloudIntegrationExtension extends AbstractExtension {
         );
     }
 
-    private function getStack() {
+     function getStack() {
         exec($this->config['aws_cloud_bin_path'] . ' ec2:show:instances stack --from-cache --format=json', $output);
+        $stack = json_decode(implode($output), true);
+        return $stack;
+    }
+
+     function getSelf() {
+        exec($this->config['aws_cloud_bin_path'] . ' ec2:show:instances self --from-cache --format=json', $output);
         $stack = json_decode(implode($output), true);
         return $stack;
     }
@@ -44,7 +50,7 @@ class TeslaAwsCloudIntegrationExtension extends AbstractExtension {
             if ($instance['public_dns']) {
            $url = $request->getScheme() . '://' . $instance['public_dns'] . ':' . $request->getPort() .  $request->getRequestUri();
             $menuItems[] = array(
-                'title' => $instance['name'],
+                'title' => strtoupper($instance['name']),
                 'url' => $url,
                 'active' => $instance['private_ip'] == $_SERVER['SERVER_ADDR']
             );

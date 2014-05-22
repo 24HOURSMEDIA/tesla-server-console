@@ -31,7 +31,13 @@ class TeslaAwsCloudIntegrationExtensionProvider implements ServiceProviderInterf
 
     public function boot(Application $app)
     {
+        // override the name parameter in the config
+        $ext = $app['tesla_server_console.extension.tesla_awscloud_integration'];
+        $self = $ext->getSelf();
 
+        if ($self) {
+            $app['config']->setParameter('console.server_name', strtoupper($self['name']));
+        }
 
     }
 } 
