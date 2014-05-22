@@ -33,6 +33,10 @@ class LogController
         $fileId = $request->get('file');
         $sort = $request->get('sort', 'desc');
 
+
+
+
+
         // get available log files and make a hash key map
         $files = array();
         foreach (Finder::create()->files()->in('/var/log')->name('*.log')->sortByName()->ignoreUnreadableDirs(

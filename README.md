@@ -72,3 +72,41 @@ and adjust settings (most notably data_dir)
 
     */1 * * * * APPDIR/console tesla:server-console:collect-stats 2>&1 >/dev/null
 
+# Advanced installation
+
+It is advised on AWS under nginx/php-fpm to run the console in a separate pool as the ec2-user, and give the user read access to log files etc.
+
+```
+; Start a new pool named tesla-server-console.
+[tesla-server-console]
+listen = 127.0.0.1:9500
+listen.allowed_clients = 127.0.0.1
+listen.owner = ec2-user
+listen.group = ec2-user
+listen.mode = 0666
+user = ec2-user
+group = ec2-user
+pm = ondemand; 
+pm.max_children = 8
+pm.max_requests = 256; 
+request_terminate_timeout = 120s			; The timeout for serving a single request after which the worker process will be killed. This option should be used when the 'max_execution_time' ini option (..)
+security.limit_extensions = .php .php3 .php4 .php5 .phar	; Limits the extensions of the main script FPM will allow to parse.
+; Pass environment variables like LD_LIBRARY_PATH. All $VARIABLEs are taken from the current environment. Default Value: clean env
+;env[HOSTNAME] = $HOSTNAME
+;env[PATH] = /usr/local/bin:/usr/bin:/bin
+;env[TMP] = /tmp
+;env[TMPDIR] = /tmp
+;env[TEMP] = /tmp
+; Additional php.ini defines, specific to this pool of workers. 
+php_flag[display_errors] = on
+php_admin_value[error_log] = /var/log/php-fpm/local-server-error.log
+php_admin_flag[log_errors] = on
+php_admin_value[memory_limit] = 32M
+```
+
+Give user access:
+
+    setfacl -d -m group:ec2-user:rx /var/log/nginx
+    setfacl -m group:ec2-user:rx /var/log/nginx
+    setfacl -m group:ec2-user:rx /var/log/nginx/*
+
