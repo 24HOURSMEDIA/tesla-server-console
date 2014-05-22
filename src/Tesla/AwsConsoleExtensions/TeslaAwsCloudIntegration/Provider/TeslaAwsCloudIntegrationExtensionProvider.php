@@ -36,7 +36,7 @@ class TeslaAwsCloudIntegrationExtensionProvider implements ServiceProviderInterf
         $self = $ext->getSelf();
 
         if ($self) {
-            $app['config']->setParameter('console.server_name', strtoupper($self['name']));
+            $app['config']->setParameter('console.server_name', strtoupper($self['instance_id']));
         }
 
     }

@@ -20,7 +20,7 @@ abstract class AbstractController {
     /**
      * @var Application
      */
-    private $container;
+    protected $container;
 
     function setContainer(Application $container) {
         $this->container = $container;

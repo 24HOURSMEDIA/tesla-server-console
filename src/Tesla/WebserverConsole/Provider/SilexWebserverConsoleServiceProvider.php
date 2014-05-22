@@ -14,8 +14,11 @@ use Silex\ServiceProviderInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Tesla\WebserverConsole\Command\CollectStatsCommand;
 use Tesla\WebserverConsole\Controller\ConsoleConfigController;
+use Tesla\WebserverConsole\Controller\HomeController;
+use Tesla\WebserverConsole\Controller\LiveDashboardController;
 use Tesla\WebserverConsole\Controller\LogController;
 use Symfony\Component\HttpFoundation\Request;
+use Tesla\WebserverConsole\Controller\MockController;
 use Tesla\WebserverConsole\Exception\WebserverConsoleException;
 use Tesla\WebserverConsole\Panel\PanelFactory;
 use Tesla\WebserverConsole\Poll\PollItemFactory;
@@ -139,6 +142,27 @@ class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
                 return $controller;
             }
         );
+        $app['tesla_webserverconsole_home.controller'] = $app->share(
+            function () use ($app) {
+                $controller = new HomeController();
+                $controller->setContainer($app)->loadConfiguration($app['config']);
+                return $controller;
+            }
+        );
+        $app['tesla_webserverconsole_live_dashboard.controller'] = $app->share(
+            function () use ($app) {
+                $controller = new LiveDashboardController();
+                $controller->setContainer($app)->loadConfiguration($app['config']);
+                return $controller;
+            }
+        );
+        $app['tesla_webserverconsole_mock.controller'] = $app->share(
+            function () use ($app) {
+                $controller = new MockController();
+                $controller->setContainer($app)->loadConfiguration($app['config']);
+                return $controller;
+            }
+        );
 
         // factory for poll services
         $app['tesla_webserverconsole_pollitem.factory'] = $app->share(
@@ -205,23 +229,12 @@ class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
 
         $app->get(
             '/',
-            function () use ($app) {
+            function (Request $request) use ($app) {
+                $controller = $app['tesla_webserverconsole_home.controller'];
+                return $controller->indexAction($request);
 
-                $panelFactory = $app['tesla_webserverconsole_panel.factory'];
-                $panels = array(
-                    $panelFactory->get('health-summary')
-                );
 
-                return $app['twig']->render(
-                    'index.html.twig',
-                    array(
-                        'panels' => $panels,
-                        '_server' => $_SERVER,
-                        'server_name' => $app['config']->getParameter('console.server_name'),
-                        'sapi_name' => php_sapi_name(),
-                        'uname' => php_uname()
-                    )
-                );
+
             }
         )->bind('homepage');
 
@@ -240,24 +253,16 @@ class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
         $app->get(
             '/tesla-server-console/live-dashboard/{panelSet}',
             function ($panelSet) use ($app) {
-                //try {
-                $panels = $app['tesla_webserverconsole_panelset.factory']->get($panelSet);
-                //} catch (\Exception $e) {
-                //    $panels = array();
-                //}
+                $controller = $app['tesla_webserverconsole_live_dashboard.controller'];
+                return $controller->getPanelSet($panelSet);
 
-                $panelSets = $app['config']->getSetting('tesla-server-console', 'panelsets');
-
-                return $app['twig']->render(
-                    'live-dashboard.html.twig',
-                    array('panels' => $panels, 'panelsets' => $panelSets, 'panelset' => $panelSets[$panelSet])
-                );
             }
         )->bind('live-dashboard');
 
         $app->get(
             '/tesla-server-console/php/phpinfo',
             function () use ($app) {
+                $controller = $app['tesla_webserverconsole_mock.controller'];
                 ob_start();
                 phpinfo();
                 $doc = ob_get_clean();
@@ -267,7 +272,7 @@ class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
                 $html = str_replace('class="e"', 'style="width: 30%;font-weight:bold;"', $html);
                 $html = "<small>$html</small>";
 
-                return $app['twig']->render('content.html.twig', array('html' => $html));
+                return $app['twig']->render('content.html.twig', $controller->extendViewParameters(array('html' => $html)));
             }
         )
             ->bind('php_phpinfo');
@@ -275,22 +280,24 @@ class SilexWebserverConsoleServiceProvider implements ServiceProviderInterface
         $app->get(
             '/tesla-server-console/php/apc-stat',
             function () use ($app) {
+                $controller = $app['tesla_webserverconsole_mock.controller'];
                 ob_start();
                 require(__DIR__ . '/../Ext/apc_stat.inc.php');
                 $html = ob_get_clean();
 
-                return $app['twig']->render('content.html.twig', array('html' => $html));
+                return $app['twig']->render('content.html.twig', $controller->extendViewParameters(array('html' => $html)));
             }
         )->bind('php_apc_stat');
 
         $app->get(
             '/tesla-server-console/memcache/memcache-stat',
             function () use ($app) {
+                $controller = $app['tesla_webserverconsole_mock.controller'];
                 ob_start();
                 require(__DIR__ . '/../Ext/memcache_stat.inc.php');
                 $html = ob_get_clean();
 
-                return $app['twig']->render('content.html.twig', array('html' => $html));
+                return $app['twig']->render('content.html.twig', $controller->extendViewParameters(array('html' => $html)));
             }
         )->bind('memcache_memcache_stat');
 
